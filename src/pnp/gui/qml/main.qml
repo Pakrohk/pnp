@@ -13,8 +13,11 @@ Kirigami.ApplicationWindow {
     pageStack.initialPage: Kirigami.PagePool.loadPage("MonitorPage.qml")
 
     globalDrawer: Kirigami.GlobalDrawer {
-        title: "PNP"
-        bannerImageSource: "applications-games"
+        header: Kirigami.Heading {
+            text: "PNP"
+            level: 1
+            Layout.margins: Kirigami.Units.largeSpacing
+        }
 
         actions: [
             Kirigami.PagePoolAction {
