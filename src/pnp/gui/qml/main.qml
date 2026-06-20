@@ -14,7 +14,7 @@ Kirigami.ApplicationWindow {
 
     globalDrawer: Kirigami.GlobalDrawer {
         title: "PNP"
-        iconSource: "applications-games"
+        bannerImageSource: "applications-games"
 
         actions: [
             Kirigami.PagePoolAction {
