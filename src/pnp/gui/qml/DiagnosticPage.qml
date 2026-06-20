@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls as Controls
 import QtQuick.Layouts
+import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.kirigami as Kirigami
 
 Kirigami.Page {
@@ -50,7 +51,7 @@ Kirigami.Page {
                         level: 3
                         Layout.fillWidth: true
                     }
-                    Controls.Label {
+                    PlasmaComponents.Label {
                         text: modelData.description
                         wrapMode: Text.WordWrap
                         Layout.fillWidth: true
@@ -58,7 +59,7 @@ Kirigami.Page {
                     }
                 }
 
-                Controls.Button {
+                PlasmaComponents.Button {
                     text: "Fix Now"
                     icon.name: "tools-check"
                     onClicked: {
@@ -74,25 +75,25 @@ Kirigami.Page {
             visible: diagList.count === 0
             icon.name: "security-high"
             text: "No issues detected"
-            helpfulText: "Your system is correctly configured for PNP."
+            explanation: "Your system is correctly configured for PNP."
         }
     }
 
-    Controls.Dialog {
+    PlasmaComponents.Dialog {
         id: diagMessageDialog
         property string issueId: ""
         title: "Administrative Privileges Required"
-        standardButtons: Controls.Dialog.Ok | Controls.Dialog.Cancel
+        standardButtons: PlasmaComponents.Dialog.Ok | PlasmaComponents.Dialog.Cancel
         anchors.centerIn: parent
         modal: true
 
         ColumnLayout {
             spacing: Kirigami.Units.largeSpacing
-            Controls.Label {
+            PlasmaComponents.Label {
                 text: "Applying this fix requires administrative privileges."
                 font.bold: true
             }
-            Controls.Label {
+            PlasmaComponents.Label {
                 text: "A system dialog will ask for your password to authorize the change."
                 wrapMode: Text.WordWrap
                 Layout.preferredWidth: Kirigami.Units.gridUnit * 15

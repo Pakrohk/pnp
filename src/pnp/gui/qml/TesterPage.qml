@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls as Controls
 import QtQuick.Layouts
+import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.kirigami as Kirigami
 
 Kirigami.Page {
@@ -24,7 +25,7 @@ Kirigami.Page {
                             text: modelData.name
                             level: 3
                         }
-                        Controls.Label {
+                        PlasmaComponents.Label {
                             text: modelData.path
                             font.family: "monospace"
                             font.pixelSize: Kirigami.Units.gridUnit * 0.6
@@ -37,7 +38,7 @@ Kirigami.Page {
                         height: Kirigami.Units.gridUnit * 1.5
                         radius: height / 2
                         color: modelData.isVirtual ? Kirigami.Theme.highlightColor : Kirigami.Theme.positiveTextColor
-                        Controls.Label {
+                        PlasmaComponents.Label {
                             anchors.centerIn: parent
                             text: modelData.isVirtual ? "Virtual" : "Physical"
                             color: "white"
@@ -104,8 +105,8 @@ Kirigami.Page {
                         ]
                         RowLayout {
                             Layout.fillWidth: true
-                            Controls.Label { text: modelData.label; Layout.preferredWidth: Kirigami.Units.gridUnit * 1.5 }
-                            Controls.ProgressBar {
+                            PlasmaComponents.Label { text: modelData.label; Layout.preferredWidth: Kirigami.Units.gridUnit * 1.5 }
+                            PlasmaComponents.ProgressBar {
                                 Layout.fillWidth: true
                                 value: (modelData.value + 1) / 2 // Mapping -1..1 to 0..1 for sticks, assuming triggers are handled correctly by backend
                             }
@@ -120,7 +121,7 @@ Kirigami.Page {
             visible: deviceList.count === 0
             icon.name: "input-gaming"
             text: "No Active Controllers"
-            helpfulText: "Enable a controller in the Monitor tab to test input."
+            explanation: "Enable a controller in the Monitor tab to test input."
         }
     }
 
@@ -137,7 +138,7 @@ Kirigami.Page {
         border.width: 1
         opacity: active ? 1.0 : 0.3
 
-        Controls.Label {
+        PlasmaComponents.Label {
             anchors.centerIn: parent
             text: parent.text
             font.bold: true

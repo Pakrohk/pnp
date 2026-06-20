@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls as Controls
 import QtQuick.Layouts
+import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.kirigami as Kirigami
 
 Kirigami.Page {
@@ -33,14 +34,14 @@ Kirigami.Page {
             Layout.fillWidth: true
             Layout.margins: Kirigami.Units.smallSpacing
 
-            Controls.ComboBox {
+            PlasmaComponents.ComboBox {
                 id: levelFilter
                 model: ["All", "INFO", "WARNING", "ERROR", "DEBUG"]
                 onCurrentTextChanged: backend.setLogLevelFilter(currentText)
                 Layout.preferredWidth: Kirigami.Units.gridUnit * 6
             }
 
-            Controls.ComboBox {
+            PlasmaComponents.ComboBox {
                 id: moduleFilter
                 model: ["All", "USB", "Steam", "Mapping", "System", "GUI"]
                 onCurrentTextChanged: backend.setLogModuleFilter(currentText)
@@ -52,12 +53,12 @@ Kirigami.Page {
 
         Kirigami.Separator { Layout.fillWidth: true }
 
-        Controls.ScrollView {
+        PlasmaComponents.ScrollView {
             Layout.fillWidth: true
             Layout.fillHeight: true
             ScrollBar.vertical.policy: Controls.ScrollBar.AlwaysOn
 
-            Controls.TextArea {
+            PlasmaComponents.TextArea {
                 id: logArea
                 readOnly: true
                 text: backend.logs

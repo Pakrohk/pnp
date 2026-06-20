@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls as Controls
 import QtQuick.Layouts
+import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.kirigami as Kirigami
 import ir.pakrohk.pnp
 
@@ -20,9 +21,13 @@ Kirigami.Page {
         id: cardsList
         anchors.fill: parent
         model: backend.controllers
-        // clip: true is redundant for Kirigami.CardsListView as it uses ScrollView internally
 
-        delegate: Kirigami.AbstractCard {
+        delegate: Kirigami.Card {
+            banner {
+                title: modelData.name
+                titleIcon: "gamepad"
+            }
+
             contentItem: ColumnLayout {
                 spacing: Kirigami.Units.mediumSpacing
 
@@ -39,18 +44,13 @@ Kirigami.Page {
                     ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 0
-                        Kirigami.Heading {
-                            text: modelData.name
-                            level: 2
-                            Layout.fillWidth: true
-                        }
-                        Controls.Label {
+                        PlasmaComponents.Label {
                             text: "Serial: " + modelData.serial
                             font.family: "monospace"
                             font.pixelSize: Kirigami.Theme.smallFont.pixelSize
                             opacity: 0.7
                         }
-                        Controls.Label {
+                        PlasmaComponents.Label {
                             text: "Path: " + modelData.path
                             font.family: "monospace"
                             font.pixelSize: Kirigami.Theme.smallFont.pixelSize
@@ -61,19 +61,19 @@ Kirigami.Page {
                     ColumnLayout {
                         visible: modelData.batteryPercentage >= 0
                         spacing: 0
-                        Controls.Label {
+                        PlasmaComponents.Label {
                             text: modelData.batteryPercentage + "%"
                             font.bold: true
                             Layout.alignment: Qt.AlignHCenter
                         }
                         Kirigami.Icon {
-                            source: modelData.batteryStatus === "Charging" ? "battery-charging" : "battery-100" // Should use dynamic icon based on percentage
+                            source: modelData.batteryStatus === "Charging" ? "battery-charging" : "battery-100"
                             Layout.preferredWidth: Kirigami.Units.gridUnit
                             Layout.preferredHeight: Kirigami.Units.gridUnit
                         }
                     }
 
-                    Controls.Switch {
+                    PlasmaComponents.Switch {
                         checked: modelData.isActive
                         onToggled: backend.toggleController(modelData.path, checked)
                     }
@@ -89,7 +89,7 @@ Kirigami.Page {
                     visible: modelData.isActive
                     spacing: Kirigami.Units.smallSpacing
 
-                    Controls.Label {
+                    PlasmaComponents.Label {
                         text: "Current Key Mappings"
                         font.bold: true
                     }
@@ -108,7 +108,7 @@ Kirigami.Page {
                                 border.color: Kirigami.Theme.focusColor
                                 border.width: 1
 
-                                Controls.Label {
+                                PlasmaComponents.Label {
                                     id: mapText
                                     anchors.centerIn: parent
                                     text: modelData.replace("BTN_", "")
@@ -126,7 +126,7 @@ Kirigami.Page {
             visible: cardsList.count === 0
             icon.name: "gamepad"
             text: "No Controllers Detected"
-            helpfulText: "Connect a PlayStation controller via USB or Bluetooth."
+            explanation: "Connect a PlayStation controller via USB or Bluetooth."
         }
     }
 
@@ -147,13 +147,13 @@ Kirigami.Page {
         ColumnLayout {
             spacing: Kirigami.Units.largeSpacing
 
-            Controls.ComboBox {
+            PlasmaComponents.ComboBox {
                 id: profileCombo
                 Layout.fillWidth: true
                 model: ["Default Profile", "Competitive", "Racing", "Fighting"]
             }
 
-            Controls.Button {
+            PlasmaComponents.Button {
                 text: "Load Selected Profile"
                 icon.name: "document-open"
                 Layout.fillWidth: true
@@ -165,13 +165,13 @@ Kirigami.Page {
 
             Kirigami.Separator { Layout.fillWidth: true }
 
-            Controls.TextField {
+            PlasmaComponents.TextField {
                 id: profileNameField
                 placeholderText: "New Profile Name"
                 Layout.fillWidth: true
             }
 
-            Controls.Button {
+            PlasmaComponents.Button {
                 text: "Save Current as New Profile"
                 icon.name: "document-save"
                 Layout.fillWidth: true

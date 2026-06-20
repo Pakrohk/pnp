@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls as Controls
 import QtQuick.Layouts
+import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.kirigami as Kirigami
 
 Kirigami.Page {
@@ -44,7 +45,7 @@ Kirigami.Page {
                 Layout.preferredHeight: Kirigami.Units.gridUnit * 3
                 color: Kirigami.Theme.alternateBackgroundColor
 
-                Controls.TextField {
+                PlasmaComponents.TextField {
                     id: searchBar
                     anchors.centerIn: parent
                     width: parent.width - Kirigami.Units.largeSpacing * 2
@@ -83,13 +84,13 @@ Kirigami.Page {
                         ColumnLayout {
                             Layout.fillWidth: true
                             spacing: 0
-                            Controls.Label {
+                            PlasmaComponents.Label {
                                 text: modelData.title
                                 font.bold: true
                                 elide: Text.ElideRight
                                 Layout.fillWidth: true
                             }
-                            Controls.Label {
+                            PlasmaComponents.Label {
                                 text: modelData.source
                                 font.pixelSize: Kirigami.Units.gridUnit * 0.6
                                 opacity: 0.6
@@ -134,19 +135,19 @@ Kirigami.Page {
             Kirigami.FormLayout {
                 Layout.fillWidth: true
 
-                Controls.Label {
+                PlasmaComponents.Label {
                     Kirigami.FormData.label: "Source:"
                     text: selectedGame ? selectedGame.source : ""
                 }
 
-                Controls.Label {
+                PlasmaComponents.Label {
                     Kirigami.FormData.label: "Install Directory:"
                     text: selectedGame ? selectedGame.installDir : ""
                     elide: Text.ElideMiddle
                     Layout.fillWidth: true
                 }
 
-                Controls.Label {
+                PlasmaComponents.Label {
                     Kirigami.FormData.label: "Executable:"
                     text: selectedGame ? selectedGame.executable : ""
                     elide: Text.ElideMiddle
@@ -158,7 +159,7 @@ Kirigami.Page {
 
             RowLayout {
                 spacing: Kirigami.Units.largeSpacing
-                Controls.Button {
+                PlasmaComponents.Button {
                     text: "Add to Steam & Configure"
                     icon.name: "list-add"
                     highlighted: true
@@ -166,7 +167,7 @@ Kirigami.Page {
                     onClicked: backend.addNonSteamGame(selectedGame)
                 }
 
-                Controls.Button {
+                PlasmaComponents.Button {
                     text: "Remove from Steam"
                     icon.name: "list-remove"
                     enabled: selectedGame && selectedGame.isAdded
@@ -185,15 +186,15 @@ Kirigami.Page {
         }
     }
 
-    Controls.Dialog {
+    PlasmaComponents.Dialog {
         id: settingsDialog
         title: "Non-Steam Settings"
-        standardButtons: Controls.Dialog.Ok | Controls.Dialog.Cancel
+        standardButtons: PlasmaComponents.Dialog.Ok | PlasmaComponents.Dialog.Cancel
         modal: true
         anchors.centerIn: parent
 
         Kirigami.FormLayout {
-            Controls.TextField {
+            PlasmaComponents.TextField {
                 id: heroicPath
                 Kirigami.FormData.label: "Heroic Games Directory"
                 placeholderText: "~/Games/Heroic"
@@ -201,7 +202,7 @@ Kirigami.Page {
                 Layout.fillWidth: true
             }
 
-            Controls.TextField {
+            PlasmaComponents.TextField {
                 id: hydraPath
                 Kirigami.FormData.label: "Hydra Games Directory"
                 placeholderText: "~/Games/Hydra"

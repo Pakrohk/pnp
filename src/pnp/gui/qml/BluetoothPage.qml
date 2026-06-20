@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls as Controls
 import QtQuick.Layouts
+import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.kirigami as Kirigami
 
 Kirigami.Page {
@@ -72,11 +73,11 @@ Kirigami.Page {
                             ColumnLayout {
                                 Layout.fillWidth: true
                                 spacing: 0
-                                Controls.Label {
+                                PlasmaComponents.Label {
                                     text: modelData.name
                                     font.bold: true
                                 }
-                                Controls.Label {
+                                PlasmaComponents.Label {
                                     text: modelData.mac
                                     font.family: "monospace"
                                     font.pixelSize: Kirigami.Units.gridUnit * 0.6
@@ -84,13 +85,13 @@ Kirigami.Page {
                                 }
                             }
 
-                            Controls.Button {
+                            PlasmaComponents.Button {
                                 text: "Pair"
                                 icon.name: "network-connect"
                                 onClicked: backend.pairBluetoothDevice(modelData.mac)
                             }
 
-                            Controls.Button {
+                            PlasmaComponents.Button {
                                 icon.name: "edit-clear"
                                 flat: true
                                 onClicked: backend.clearBluetoothCache(modelData.mac)
@@ -105,7 +106,7 @@ Kirigami.Page {
                         text: "No devices found"
                         visible: deviceList.count === 0
                         icon.name: "bluetooth"
-                        helpfulText: "Click 'Scan for Devices' to begin discovery."
+                        explanation: "Click 'Scan for Devices' to begin discovery."
                     }
                 }
             }
@@ -129,11 +130,11 @@ Kirigami.Page {
                     color: Kirigami.Theme.alternateBackgroundColor
                     border.color: Kirigami.Theme.focusColor
 
-                    Controls.ScrollView {
+                    PlasmaComponents.ScrollView {
                         anchors.fill: parent
                         anchors.margins: 1
 
-                        Controls.TextArea {
+                        PlasmaComponents.TextArea {
                             id: bluetoothLogs
                             readOnly: true
                             font.family: "Monospace"
@@ -152,14 +153,14 @@ Kirigami.Page {
         }
     }
 
-    Controls.Dialog {
+    PlasmaComponents.Dialog {
         id: resetDialog
         title: "Reset Bluetooth Stack"
-        standardButtons: Controls.Dialog.Ok | Controls.Dialog.Cancel
+        standardButtons: PlasmaComponents.Dialog.Ok | PlasmaComponents.Dialog.Cancel
         modal: true
         anchors.centerIn: parent
 
-        Controls.Label {
+        PlasmaComponents.Label {
             text: "This will attempt to restart the Bluetooth service and reload kernel modules. Continue?"
             wrapMode: Text.WordWrap
             width: Kirigami.Units.gridUnit * 15

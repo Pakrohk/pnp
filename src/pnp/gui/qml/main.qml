@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls as Controls
 import QtQuick.Layouts
+import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.kirigami as Kirigami
 
 Kirigami.ApplicationWindow {
@@ -9,7 +10,7 @@ Kirigami.ApplicationWindow {
     height: 768
     title: "PNP – PS NOT PS"
 
-    pageStack.initialPage: monitorPage
+    pageStack.initialPage: Kirigami.PagePool.loadPage("MonitorPage.qml")
 
     globalDrawer: Kirigami.GlobalDrawer {
         title: "PNP"
@@ -58,8 +59,6 @@ Kirigami.ApplicationWindow {
             }
         ]
     }
-
-    Component { id: monitorPage; MonitorPage {} }
 
 
     // Compatibility function for pages that call window.toast.show()

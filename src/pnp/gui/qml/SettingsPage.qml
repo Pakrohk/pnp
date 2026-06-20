@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls as Controls
 import QtQuick.Layouts
+import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.kirigami as Kirigami
 
 Kirigami.ScrollablePage {
@@ -16,7 +17,7 @@ Kirigami.ScrollablePage {
             Kirigami.FormData.isSection: true
         }
 
-        Controls.Switch {
+        PlasmaComponents.Switch {
             Kirigami.FormData.label: "Steam Conflict Prevention"
             Kirigami.FormData.buddy: this
             checked: backend.config.steam_handover_enabled
@@ -26,12 +27,12 @@ Kirigami.ScrollablePage {
 
         RowLayout {
             Kirigami.FormData.label: "Actions"
-            Controls.Button {
+            PlasmaComponents.Button {
                 text: "Connect to Steam"
                 icon.name: "network-connect"
                 onClicked: backend.connectToSteam()
             }
-            Controls.Button {
+            PlasmaComponents.Button {
                 text: "Sync with Steam"
                 icon.name: "view-refresh"
                 onClicked: backend.syncWithSteam()
@@ -44,7 +45,7 @@ Kirigami.ScrollablePage {
             Kirigami.FormData.isSection: true
         }
 
-        Controls.TextField {
+        PlasmaComponents.TextField {
             Kirigami.FormData.label: "Rumble Gain"
             text: backend.config.rumble_gain
             onEditingFinished: backend.updateConfig("rumble_gain", text)
@@ -57,7 +58,7 @@ Kirigami.ScrollablePage {
             Kirigami.FormData.isSection: true
         }
 
-        Controls.Switch {
+        PlasmaComponents.Switch {
             Kirigami.FormData.label: "Background Service"
             checked: backend.serviceActive
             onToggled: backend.toggleService(checked)
@@ -76,7 +77,7 @@ Kirigami.ScrollablePage {
                 { label: "Absolute Map", key: "absmap", value: backend.config.mapping.absmap },
                 { label: "Key Map", key: "keymap", value: backend.config.mapping.keymap }
             ]
-            Controls.TextField {
+            PlasmaComponents.TextField {
                 Kirigami.FormData.label: modelData.label
                 Layout.fillWidth: true
                 text: modelData.value
@@ -86,7 +87,7 @@ Kirigami.ScrollablePage {
 
         Kirigami.Separator { Kirigami.FormData.isSection: true }
 
-        Controls.Button {
+        PlasmaComponents.Button {
             text: "Save & Apply All"
             icon.name: "document-save"
             highlighted: true

@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls as Controls
 import QtQuick.Layouts
+import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.kirigami as Kirigami
 
 Kirigami.Page {
@@ -22,51 +23,29 @@ Kirigami.Page {
         anchors.fill: parent
         model: backend.steamGames
 
-        delegate: Kirigami.AbstractCard {
-            contentItem: RowLayout {
-                spacing: Kirigami.Units.largeSpacing
+        delegate: Kirigami.Card {
+            banner.title: modelData.name
 
-                Kirigami.Icon {
-                    source: "applications-games"
-                    Layout.preferredWidth: Kirigami.Units.gridUnit * 2
-                    Layout.preferredHeight: Kirigami.Units.gridUnit * 2
+            contentItem: ColumnLayout {
+                PlasmaComponents.Label {
+                    text: "AppID: " + modelData.appid
+                    color: Kirigami.Theme.disabledTextColor
+                    font.pixelSize: Kirigami.Theme.smallFont.pixelSize
                 }
+            }
 
-                ColumnLayout {
-                    Layout.fillWidth: true
-                    spacing: 0
-                    Kirigami.Heading {
-                        text: modelData.name
-                        level: 2
-                        Layout.fillWidth: true
-                    }
-                    Controls.Label {
-                        text: "AppID: " + modelData.appid
-                        opacity: 0.6
-                        font.family: "monospace"
-                    }
-                }
-
-                Rectangle {
-                    width: Kirigami.Units.gridUnit * 6
-                    height: Kirigami.Units.gridUnit * 1.5
-                    radius: height / 2
-                    color: Kirigami.Theme.positiveTextColor
-                    visible: modelData.applied
-                    Controls.Label {
-                        anchors.centerIn: parent
-                        text: "Profile Applied"
-                        color: "white"
-                        font.pixelSize: Kirigami.Units.gridUnit * 0.6
-                        font.bold: true
-                    }
-                }
-
-                Controls.Button {
+            actions: [
+                Kirigami.Action {
                     text: modelData.applied ? "Update Profile" : "Download Profile"
                     icon.name: "download"
-                    onClicked: backend.downloadGameProfile(modelData.appid)
+                    onTriggered: backend.downloadGameProfile(modelData.appid)
                 }
+            ]
+
+            header: Kirigami.InlineMessage {
+                visible: modelData.applied
+                type: Kirigami.MessageType.Positive
+                text: "Profile Applied"
             }
         }
 
@@ -75,7 +54,7 @@ Kirigami.Page {
             visible: gameList.count === 0
             icon.name: "applications-games"
             text: "No Steam Games Found"
-            helpfulText: "Ensure Steam is installed and you have games in your library."
+            explanation: "Ensure Steam is installed and you have games in your library."
         }
     }
 }
