@@ -9,79 +9,58 @@ Kirigami.ApplicationWindow {
     height: 768
     title: "PNP – PS NOT PS"
 
+    pageStack.initialPage: monitorPage
+
     globalDrawer: Kirigami.GlobalDrawer {
         title: "PNP"
         iconSource: "applications-games"
 
         actions: [
-            Kirigami.Action {
+            Kirigami.PagePoolAction {
                 text: "Monitor"
-                iconName: "gamepad"
-                onTriggered: pageStack.replace(monitorPage)
+                icon.name: "gamepad"
+                page: "MonitorPage.qml"
             },
-            Kirigami.Action {
+            Kirigami.PagePoolAction {
                 text: "Game Library"
-                iconName: "games-config"
-                onTriggered: pageStack.replace(libraryPage)
+                icon.name: "games-config"
+                page: "GameLibraryPage.qml"
             },
-            Kirigami.Action {
+            Kirigami.PagePoolAction {
                 text: "Non-Steam Games"
-                iconName: "applications-other"
-                onTriggered: pageStack.replace(nonSteamPage)
+                icon.name: "applications-other"
+                page: "NonSteamPage.qml"
             },
-            Kirigami.Action {
+            Kirigami.PagePoolAction {
                 text: "Bluetooth"
-                iconName: "preferences-system-bluetooth"
-                onTriggered: pageStack.replace(bluetoothPage)
+                icon.name: "preferences-system-bluetooth"
+                page: "BluetoothPage.qml"
             },
-            Kirigami.Action {
+            Kirigami.PagePoolAction {
                 text: "Input Tester"
-                iconName: "input-gaming"
-                onTriggered: pageStack.replace(testerPage)
+                icon.name: "input-gaming"
+                page: "TesterPage.qml"
             },
-            Kirigami.Action {
+            Kirigami.PagePoolAction {
                 text: "Diagnostics"
-                iconName: "tools-report-bug"
-                onTriggered: pageStack.replace(diagnosticPage)
+                icon.name: "tools-report-bug"
+                page: "DiagnosticPage.qml"
             },
-            Kirigami.Action {
+            Kirigami.PagePoolAction {
                 text: "Settings"
-                iconName: "settings-configure"
-                onTriggered: pageStack.replace(settingsPage)
+                icon.name: "settings-configure"
+                page: "SettingsPage.qml"
             },
-            Kirigami.Action {
+            Kirigami.PagePoolAction {
                 text: "Logs"
-                iconName: "document-view"
-                onTriggered: pageStack.replace(logPage)
+                icon.name: "document-view"
+                page: "LogPage.qml"
             }
         ]
     }
 
     Component { id: monitorPage; MonitorPage {} }
-    Component { id: libraryPage; GameLibraryPage {} }
-    Component { id: nonSteamPage; NonSteamPage {} }
-    Component { id: bluetoothPage; BluetoothPage {} }
-    Component { id: testerPage; TesterPage {} }
-    Component { id: diagnosticPage; DiagnosticPage {} }
-    Component { id: settingsPage; SettingsPage {} }
-    Component { id: logPage; LogPage {} }
 
-    pageStack.initialPage: monitorPage
-
-    // Simple Toast Component using Kirigami.Action if needed or a custom Item
-    // Kirigami has its own message mechanisms, but for compatibility:
-    Kirigami.OverlaySheet {
-        id: toastSheet
-        property string message: ""
-        Label {
-            text: toastSheet.message
-            wrapMode: Text.WordWrap
-        }
-        function show(msg) {
-            message = msg
-            open()
-        }
-    }
 
     // Compatibility function for pages that call window.toast.show()
     property alias toast: toastCompat
@@ -89,6 +68,13 @@ Kirigami.ApplicationWindow {
         id: toastCompat
         function show(msg) {
             root.showPassiveNotification(msg)
+        }
+    }
+
+    Connections {
+        target: backend
+        function onShowToast(message) {
+            root.showPassiveNotification(message)
         }
     }
 }

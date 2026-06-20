@@ -58,7 +58,6 @@ Kirigami.Page {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     model: bluetoothPage.scannedDevices
-                    clip: true
 
                     delegate: Kirigami.AbstractCard {
                         contentItem: RowLayout {

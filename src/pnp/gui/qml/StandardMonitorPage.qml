@@ -1,9 +1,9 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as Controls
 import QtQuick.Layouts
 import ir.pakrohk.pnp
 
-Page {
+Controls.Page {
     id: monitorPage
 
     ColumnLayout {
@@ -11,7 +11,7 @@ Page {
         anchors.margins: 20
         spacing: 20
 
-        Label {
+        Controls.Label {
             text: "PNP Controller Mapper"
             font.pixelSize: 24
             font.bold: true
@@ -28,7 +28,7 @@ Page {
                 width: parent.width
                 spacing: 10
 
-                Frame {
+                Controls.Frame {
                     Layout.fillWidth: true
                     padding: 15
 
@@ -42,7 +42,7 @@ Page {
                             radius: 20
                             color: modelData.isActive ? "#4CAF50" : "#F44336"
 
-                            Label {
+                            Controls.Label {
                                 anchors.centerIn: parent
                                 text: "🎮"
                                 font.pixelSize: 20
@@ -51,12 +51,12 @@ Page {
 
                         ColumnLayout {
                             Layout.fillWidth: true
-                            Label {
+                            Controls.Label {
                                 text: modelData.name
                                 font.bold: true
                                 font.pixelSize: 16
                             }
-                            Label {
+                            Controls.Label {
                                 text: "Serial: " + modelData.serial + " | Path: " + modelData.path
                                 font.pixelSize: 12
                                 opacity: 0.7
@@ -66,22 +66,22 @@ Page {
                         RowLayout {
                             spacing: 5
                             visible: modelData.batteryPercentage >= 0
-                            Label {
+                            Controls.Label {
                                 text: modelData.batteryPercentage + "%"
                             }
-                            Label {
+                            Controls.Label {
                                 text: modelData.batteryStatus === "Charging" ? "⚡" : "🔋"
                             }
                         }
 
-                        Switch {
+                        Controls.Switch {
                             checked: modelData.isActive
                             onToggled: backend.toggleController(modelData.path, checked)
                         }
                     }
                 }
 
-                Frame {
+                Controls.Frame {
                     Layout.fillWidth: true
                     visible: modelData.isActive
                     background: Rectangle {
@@ -91,7 +91,7 @@ Page {
 
                     ColumnLayout {
                         width: parent.width
-                        Label {
+                        Controls.Label {
                             text: "Current Key Mappings"
                             font.bold: true
                             font.pixelSize: 12
@@ -111,7 +111,7 @@ Page {
                                     color: "#3A3A3A"
                                     border.color: "#555"
 
-                                    Label {
+                                    Controls.Label {
                                         id: mapText
                                         anchors.centerIn: parent
                                         text: modelData.replace("BTN_", "")
@@ -129,18 +129,18 @@ Page {
             Layout.fillWidth: true
             spacing: 10
 
-            ComboBox {
+            Controls.ComboBox {
                 id: profileCombo
                 model: ["Default Profile", "Competitive", "Racing", "Fighting"]
                 Layout.fillWidth: true
             }
 
-            Button {
+            Controls.Button {
                 text: "📥 Download from Steam"
                 onClicked: backend.syncWithSteam()
             }
 
-            Button {
+            Controls.Button {
                 text: "📂 Load Profile"
                 onClicked: backend.loadProfile(profileCombo.currentText)
             }
@@ -150,13 +150,13 @@ Page {
             Layout.fillWidth: true
             spacing: 10
 
-            TextField {
+            Controls.TextField {
                 id: profileNameField
                 placeholderText: "Profile Name"
                 Layout.fillWidth: true
             }
 
-            Button {
+            Controls.Button {
                 text: "💾 Save Profile"
                 onClicked: {
                     if (profileNameField.text !== "") {

@@ -1,8 +1,8 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as Controls
 import QtQuick.Layouts
 
-Page {
+Controls.Page {
     id: nonSteamPage
 
     property var selectedGame: null
@@ -23,12 +23,12 @@ Page {
             RowLayout {
                 Layout.fillWidth: true
                 spacing: 10
-                TextField {
+                Controls.TextField {
                     id: searchBar
                     Layout.fillWidth: true
                     placeholderText: "🔍 Search games..."
                 }
-                Button {
+                Controls.Button {
                     text: "⚙️"
                     flat: true
                     onClicked: settingsDialog.open()
@@ -43,7 +43,7 @@ Page {
                 clip: true
                 spacing: 8
 
-                delegate: ItemDelegate {
+                delegate: Controls.ItemDelegate {
                     width: gameList.width
                     height: 60
                     highlighted: ListView.isCurrentItem
@@ -58,7 +58,7 @@ Page {
                         anchors.margins: 10
                         spacing: 15
 
-                        Label {
+                        Controls.Label {
                             text: modelData.source === "Heroic" ? "🚀" : "🐉"
                             font.pixelSize: 24
                         }
@@ -66,12 +66,12 @@ Page {
                         ColumnLayout {
                             Layout.fillWidth: true
                             spacing: 2
-                            Label {
+                            Controls.Label {
                                 text: modelData.title
                                 font.bold: true
                                 elide: Text.ElideRight
                             }
-                            Label {
+                            Controls.Label {
                                 text: modelData.source
                                 font.pixelSize: 10
                                 opacity: 0.6
@@ -83,7 +83,7 @@ Page {
                             height: 20
                             radius: 10
                             color: modelData.isAdded ? "#4CAF50" : "#555"
-                            Label {
+                            Controls.Label {
                                 anchors.centerIn: parent
                                 text: modelData.isAdded ? "Added" : "Not Added"
                                 font.pixelSize: 9
@@ -98,12 +98,12 @@ Page {
             RowLayout {
                 Layout.fillWidth: true
                 spacing: 10
-                Button {
+                Controls.Button {
                     text: "🔄 Refresh"
                     Layout.fillWidth: true
                     onClicked: backend.refreshNonSteamGames()
                 }
-                Button {
+                Controls.Button {
                     text: "📂 Select Folder"
                     Layout.fillWidth: true
                     onClicked: backend.selectGamesDirectory()
@@ -118,7 +118,7 @@ Page {
             spacing: 20
             visible: selectedGame !== null
 
-            Label {
+            Controls.Label {
                 text: selectedGame ? selectedGame.title : ""
                 font.pixelSize: 28
                 font.bold: true
@@ -131,18 +131,18 @@ Page {
                 columnSpacing: 20
                 rowSpacing: 10
 
-                Label { text: "Source:"; opacity: 0.6 }
-                Label { text: selectedGame ? selectedGame.source : "" }
+                Controls.Label { text: "Source:"; opacity: 0.6 }
+                Controls.Label { text: selectedGame ? selectedGame.source : "" }
 
-                Label { text: "Install Dir:"; opacity: 0.6 }
-                Label {
+                Controls.Label { text: "Install Dir:"; opacity: 0.6 }
+                Controls.Label {
                     text: selectedGame ? selectedGame.installDir : ""
                     elide: Text.ElideMiddle
                     Layout.preferredWidth: 300
                 }
 
-                Label { text: "Executable:"; opacity: 0.6 }
-                Label {
+                Controls.Label { text: "Executable:"; opacity: 0.6 }
+                Controls.Label {
                     text: selectedGame ? selectedGame.executable : ""
                     elide: Text.ElideMiddle
                     Layout.preferredWidth: 300
@@ -153,14 +153,14 @@ Page {
 
             RowLayout {
                 spacing: 15
-                Button {
+                Controls.Button {
                     text: "🚀 Add to Steam & Configure"
                     highlighted: true
                     enabled: selectedGame && !selectedGame.isAdded
                     onClicked: backend.addNonSteamGame(selectedGame)
                 }
 
-                Button {
+                Controls.Button {
                     text: "🗑️ Remove from Steam"
                     enabled: selectedGame && selectedGame.isAdded
                     onClicked: backend.removeNonSteamGame(selectedGame.title)
@@ -174,7 +174,7 @@ Page {
             Layout.fillHeight: true
             visible: selectedGame === null
 
-            Label {
+            Controls.Label {
                 anchors.centerIn: parent
                 text: "Select a game to view details"
                 opacity: 0.4
@@ -183,24 +183,24 @@ Page {
         }
     }
 
-    Dialog {
+    Controls.Dialog {
         id: settingsDialog
         title: "Non-Steam Settings"
-        standardButtons: Dialog.Ok | Dialog.Cancel
+        standardButtons: Controls.Dialog.Ok | Controls.Dialog.Cancel
         anchors.centerIn: parent
 
         ColumnLayout {
             spacing: 15
-            Label { text: "Paths Configuration"; font.bold: true }
+            Controls.Label { text: "Paths Configuration"; font.bold: true }
 
-            TextField {
+            Controls.TextField {
                 id: heroicPath
                 Layout.fillWidth: true
                 placeholderText: "Heroic Games Directory"
                 text: backend.config.heroic_games_dir || "~/Games/Heroic"
             }
 
-            TextField {
+            Controls.TextField {
                 id: hydraPath
                 Layout.fillWidth: true
                 placeholderText: "Hydra Games Directory"

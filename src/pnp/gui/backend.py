@@ -102,6 +102,7 @@ class Backend(QObject):
     serviceActiveChanged = Signal()
     diagnosticIssuesChanged = Signal()
     fixCompleted = Signal(bool, str)
+    showToast = Signal(str)
     directorySelected = Signal(str)
     bluetoothLogReceived = Signal(str, str)
     bluetoothScanFinished = Signal(list)

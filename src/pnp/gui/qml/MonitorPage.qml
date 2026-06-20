@@ -20,6 +20,7 @@ Kirigami.Page {
         id: cardsList
         anchors.fill: parent
         model: backend.controllers
+        // clip: true is redundant for Kirigami.CardsListView as it uses ScrollView internally
 
         delegate: Kirigami.AbstractCard {
             contentItem: ColumnLayout {
@@ -46,13 +47,13 @@ Kirigami.Page {
                         Controls.Label {
                             text: "Serial: " + modelData.serial
                             font.family: "monospace"
-                            font.pixelSize: Kirigami.Units.gridUnit * 0.7
+                            font.pixelSize: Kirigami.Theme.smallFont.pixelSize
                             opacity: 0.7
                         }
                         Controls.Label {
                             text: "Path: " + modelData.path
                             font.family: "monospace"
-                            font.pixelSize: Kirigami.Units.gridUnit * 0.7
+                            font.pixelSize: Kirigami.Theme.smallFont.pixelSize
                             opacity: 0.7
                         }
                     }
@@ -111,7 +112,7 @@ Kirigami.Page {
                                     id: mapText
                                     anchors.centerIn: parent
                                     text: modelData.replace("BTN_", "")
-                                    font.pixelSize: Kirigami.Units.gridUnit * 0.7
+                                    font.pixelSize: Kirigami.Theme.smallFont.pixelSize
                                 }
                             }
                         }

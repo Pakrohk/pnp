@@ -1,8 +1,8 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as Controls
 import QtQuick.Layouts
 
-Page {
+Controls.Page {
     id: diagnosticPage
 
     ColumnLayout {
@@ -13,12 +13,12 @@ Page {
         RowLayout {
             width: parent.width
             ColumnLayout {
-                Label {
+                Controls.Label {
                     text: "System Diagnostics"
                     font.pixelSize: 24
                     font.bold: true
                 }
-                Label {
+                Controls.Label {
                     text: "Identify and resolve configuration conflicts for Steam Input."
                     font.pixelSize: 14
                     opacity: 0.7
@@ -27,17 +27,17 @@ Page {
             Item { Layout.fillWidth: true }
             RowLayout {
                 spacing: 10
-                Button {
+                Controls.Button {
                     text: "🔍 Run Scan"
                     highlighted: true
                     onClicked: backend.runDiagnostics()
                 }
-                Button {
+                Controls.Button {
                     text: "🚀 Fix All"
                     visible: backend.diagnosticIssues.length > 0
                     onClicked: backend.fixAllIssues()
                 }
-                Button {
+                Controls.Button {
                     text: "🔄 Revert"
                     onClicked: backend.revertSystemChanges()
                 }
@@ -53,7 +53,7 @@ Page {
             spacing: 15
             clip: true
 
-            delegate: Frame {
+            delegate: Controls.Frame {
                 width: diagList.width
                 padding: 15
 
@@ -69,7 +69,7 @@ Page {
                     width: parent.width
                     spacing: 15
 
-                    Label {
+                    Controls.Label {
                         text: modelData.severity === "critical" ? "🔴" :
                               modelData.severity === "warning" ? "🟠" : "🔵"
                         font.pixelSize: 24
@@ -77,12 +77,12 @@ Page {
 
                     ColumnLayout {
                         Layout.fillWidth: true
-                        Label {
+                        Controls.Label {
                             text: modelData.title
                             font.bold: true
                             font.pixelSize: 16
                         }
-                        Label {
+                        Controls.Label {
                             text: modelData.description
                             font.pixelSize: 13
                             wrapMode: Text.WordWrap
@@ -91,7 +91,7 @@ Page {
                         }
                     }
 
-                    Button {
+                    Controls.Button {
                         text: "🔧 Fix Now"
                         onClicked: {
                             diagMessageDialog.issueId = modelData.id
@@ -101,7 +101,7 @@ Page {
                 }
             }
 
-            Label {
+            Controls.Label {
                 anchors.centerIn: parent
                 visible: diagList.count === 0
                 text: diagList.placeholderText
@@ -111,21 +111,21 @@ Page {
         }
     }
 
-    Dialog {
+    Controls.Dialog {
         id: diagMessageDialog
         property string issueId: ""
         title: "Administrative Privileges Required"
-        standardButtons: Dialog.Ok | Dialog.Cancel
+        standardButtons: Controls.Dialog.Ok | Controls.Dialog.Cancel
         anchors.centerIn: parent
         modal: true
 
         ColumnLayout {
             spacing: 10
-            Label {
+            Controls.Label {
                 text: "Applying this fix requires administrative privileges."
                 font.bold: true
             }
-            Label {
+            Controls.Label {
                 text: "A system dialog will ask for your password to authorize the change."
                 wrapMode: Text.WordWrap
                 Layout.preferredWidth: 300

@@ -1,8 +1,8 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as Controls
 import QtQuick.Layouts
 
-Page {
+Controls.Page {
     id: testerPage
 
     ColumnLayout {
@@ -10,13 +10,13 @@ Page {
         anchors.margins: 20
         spacing: 20
 
-        Label {
+        Controls.Label {
             text: "Input Tester"
             font.pixelSize: 24
             font.bold: true
         }
 
-        Label {
+        Controls.Label {
             text: "Monitoring active virtual controllers..."
             font.pixelSize: 14
             opacity: 0.7
@@ -30,7 +30,7 @@ Page {
             spacing: 20
             clip: true
 
-            delegate: Frame {
+            delegate: Controls.Frame {
                 width: testerList.width
                 padding: 20
 
@@ -40,11 +40,11 @@ Page {
 
                     RowLayout {
                         width: parent.width
-                        Label {
+                        Controls.Label {
                             text: modelData.name
                             font.bold: true
                         }
-                        Label {
+                        Controls.Label {
                             text: modelData.path
                             font.pixelSize: 12
                             opacity: 0.6
@@ -55,7 +55,7 @@ Page {
                             height: 24
                             radius: 12
                             color: modelData.isVirtual ? "#2196F3" : "#4CAF50"
-                            Label {
+                            Controls.Label {
                                 anchors.centerIn: parent
                                 text: modelData.isVirtual ? "Virtual" : "Physical"
                                 color: "white"
@@ -112,8 +112,8 @@ Page {
                                 { label: "RT", value: modelData.axes[5] }
                             ]
                             RowLayout {
-                                Label { text: modelData.label; width: 30 }
-                                ProgressBar {
+                                Controls.Label { text: modelData.label; width: 30 }
+                                Controls.ProgressBar {
                                     Layout.fillWidth: true
                                     value: (modelData.value + 1) / 2
                                 }
@@ -138,7 +138,7 @@ Page {
         border.width: 1
         opacity: active ? 1.0 : 0.3
 
-        Label {
+        Controls.Label {
             anchors.centerIn: parent
             text: parent.text
             font.bold: true

@@ -1,8 +1,8 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as Controls
 import QtQuick.Layouts
 
-Page {
+Controls.Page {
     id: logPage
 
     ColumnLayout {
@@ -12,26 +12,26 @@ Page {
 
         RowLayout {
             width: parent.width
-            Label {
+            Controls.Label {
                 text: "System Logs"
                 font.pixelSize: 24
                 font.bold: true
                 Layout.fillWidth: true
             }
 
-            ComboBox {
+            Controls.ComboBox {
                 id: levelFilter
                 model: ["All", "INFO", "WARNING", "ERROR", "DEBUG"]
                 onCurrentTextChanged: backend.setLogLevelFilter(currentText)
             }
 
-            ComboBox {
+            Controls.ComboBox {
                 id: moduleFilter
                 model: ["All", "USB", "Steam", "Mapping", "System", "GUI"]
                 onCurrentTextChanged: backend.setLogModuleFilter(currentText)
             }
 
-            Button {
+            Controls.Button {
                 text: "📋 Copy All"
                 onClicked: {
                     logArea.selectAll()
@@ -39,13 +39,13 @@ Page {
                     logArea.deselect()
                 }
             }
-            Button {
+            Controls.Button {
                 text: "🗑️ Clear"
                 onClicked: backend.clearLogs()
             }
         }
 
-        Frame {
+        Controls.Frame {
             Layout.fillWidth: true
             Layout.fillHeight: true
             padding: 0
@@ -55,11 +55,11 @@ Page {
                 radius: 4
             }
 
-            ScrollView {
+            Controls.ScrollView {
                 anchors.fill: parent
-                ScrollBar.vertical.policy: ScrollBar.AlwaysOn
+                Controls.ScrollBar.vertical.policy: Controls.ScrollBar.AlwaysOn
 
-                TextArea {
+                Controls.TextArea {
                     id: logArea
                     readOnly: true
                     text: backend.logs

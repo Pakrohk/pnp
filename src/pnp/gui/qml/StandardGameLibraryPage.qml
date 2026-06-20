@@ -1,8 +1,8 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as Controls
 import QtQuick.Layouts
 
-Page {
+Controls.Page {
     id: gameLibraryPage
 
     Component.onCompleted: backend.refreshSteamGames()
@@ -15,19 +15,19 @@ Page {
         RowLayout {
             width: parent.width
             ColumnLayout {
-                Label {
+                Controls.Label {
                     text: "Steam Game Library"
                     font.pixelSize: 24
                     font.bold: true
                 }
-                Label {
+                Controls.Label {
                     text: "Manage Steam Input profiles for your games."
                     font.pixelSize: 14
                     opacity: 0.7
                 }
             }
             Item { Layout.fillWidth: true }
-            Button {
+            Controls.Button {
                 text: "🔄 Refresh"
                 onClicked: backend.refreshSteamGames()
             }
@@ -41,7 +41,7 @@ Page {
             spacing: 10
             clip: true
 
-            delegate: Frame {
+            delegate: Controls.Frame {
                 width: gameList.width
                 padding: 15
 
@@ -57,12 +57,12 @@ Page {
 
                     ColumnLayout {
                         Layout.fillWidth: true
-                        Label {
+                        Controls.Label {
                             text: modelData.name
                             font.bold: true
                             font.pixelSize: 16
                         }
-                        Label {
+                        Controls.Label {
                             text: "AppID: " + modelData.appid
                             font.pixelSize: 12
                             opacity: 0.6
@@ -75,7 +75,7 @@ Page {
                         radius: 12
                         color: modelData.applied ? "#4CAF50" : "#555"
                         visible: modelData.applied
-                        Label {
+                        Controls.Label {
                             anchors.centerIn: parent
                             text: "Profile Applied"
                             color: "white"
@@ -84,7 +84,7 @@ Page {
                         }
                     }
 
-                    Button {
+                    Controls.Button {
                         text: modelData.applied ? "Update Profile" : "Download Profile"
                         onClicked: backend.downloadGameProfile(modelData.appid)
                     }

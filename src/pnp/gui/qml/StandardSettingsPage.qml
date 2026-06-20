@@ -1,11 +1,11 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as Controls
 import QtQuick.Layouts
 
-Page {
+Controls.Page {
     id: settingsPage
 
-    ScrollView {
+    Controls.ScrollView {
         anchors.fill: parent
         contentWidth: parent.width
 
@@ -15,13 +15,13 @@ Page {
             anchors.margins: 20
             spacing: 30
 
-            Label {
+            Controls.Label {
                 text: "Settings"
                 font.pixelSize: 24
                 font.bold: true
             }
 
-            GroupBox {
+            Controls.GroupBox {
                 title: "Steam Integration"
                 Layout.fillWidth: true
                 ColumnLayout {
@@ -31,11 +31,11 @@ Page {
                     RowLayout {
                         width: parent.width
                         ColumnLayout {
-                            Label { text: "Steam Conflict Prevention"; font.bold: true }
-                            Label { text: "Pause emulation when Steam is running"; font.pixelSize: 12; opacity: 0.7 }
+                            Controls.Label { text: "Steam Conflict Prevention"; font.bold: true }
+                            Controls.Label { text: "Pause emulation when Steam is running"; font.pixelSize: 12; opacity: 0.7 }
                         }
                         Item { Layout.fillWidth: true }
-                        Switch {
+                        Controls.Switch {
                             checked: backend.config.steam_handover_enabled
                             onToggled: backend.updateConfig("steam_handover_enabled", checked)
                         }
@@ -43,12 +43,12 @@ Page {
 
                     RowLayout {
                         spacing: 10
-                        Button {
+                        Controls.Button {
                             text: "🔗 Connect to Steam"
                             Layout.fillWidth: true
                             onClicked: backend.connectToSteam()
                         }
-                        Button {
+                        Controls.Button {
                             text: "🔄 Sync with Steam"
                             Layout.fillWidth: true
                             onClicked: backend.syncWithSteam()
@@ -57,7 +57,7 @@ Page {
                 }
             }
 
-            GroupBox {
+            Controls.GroupBox {
                 title: "General Settings"
                 Layout.fillWidth: true
                 ColumnLayout {
@@ -66,11 +66,11 @@ Page {
                     RowLayout {
                         width: parent.width
                         ColumnLayout {
-                            Label { text: "Theme"; font.bold: true }
-                            Label { text: "Switch between Light and Dark mode"; font.pixelSize: 12; opacity: 0.7 }
+                            Controls.Label { text: "Theme"; font.bold: true }
+                            Controls.Label { text: "Controls.Switch between Light and Dark mode"; font.pixelSize: 12; opacity: 0.7 }
                         }
                         Item { Layout.fillWidth: true }
-                        Switch {
+                        Controls.Switch {
                             checked: true // Hardcoded for now as Material.Dark is set in main.qml
                             text: "Dark Mode"
                             enabled: false
@@ -82,11 +82,11 @@ Page {
                     RowLayout {
                         width: parent.width
                         ColumnLayout {
-                            Label { text: "Rumble Gain"; font.bold: true }
-                            Label { text: "Global force feedback strength"; font.pixelSize: 12; opacity: 0.7 }
+                            Controls.Label { text: "Rumble Gain"; font.bold: true }
+                            Controls.Label { text: "Global force feedback strength"; font.pixelSize: 12; opacity: 0.7 }
                         }
                         Item { Layout.fillWidth: true }
-                        TextField {
+                        Controls.TextField {
                             text: backend.config.rumble_gain
                             onEditingFinished: backend.updateConfig("rumble_gain", text)
                         }
@@ -94,24 +94,24 @@ Page {
                 }
             }
 
-            GroupBox {
+            Controls.GroupBox {
                 title: "System Service"
                 Layout.fillWidth: true
                 RowLayout {
                     width: parent.width
                     ColumnLayout {
-                        Label { text: "Background Service"; font.bold: true }
-                        Label { text: "Manage the system-wide PNP service"; font.pixelSize: 12; opacity: 0.7 }
+                        Controls.Label { text: "Background Service"; font.bold: true }
+                        Controls.Label { text: "Manage the system-wide PNP service"; font.pixelSize: 12; opacity: 0.7 }
                     }
                     Item { Layout.fillWidth: true }
-                    Switch {
+                    Controls.Switch {
                         checked: backend.serviceActive
                         onToggled: backend.toggleService(checked)
                     }
                 }
             }
 
-            GroupBox {
+            Controls.GroupBox {
                 title: "Global Mapping"
                 Layout.fillWidth: true
                 ColumnLayout {
@@ -126,8 +126,8 @@ Page {
                         ]
                         ColumnLayout {
                             width: parent.width
-                            Label { text: modelData.label; font.bold: true }
-                            TextField {
+                            Controls.Label { text: modelData.label; font.bold: true }
+                            Controls.TextField {
                                 Layout.fillWidth: true
                                 text: modelData.value
                                 onEditingFinished: backend.updateMapping(modelData.key, text)
@@ -137,7 +137,7 @@ Page {
                 }
             }
 
-            Button {
+            Controls.Button {
                 text: "Save & Apply"
                 Layout.alignment: Qt.AlignHCenter
                 highlighted: true
