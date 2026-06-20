@@ -1,122 +1,117 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as Controls
 import QtQuick.Layouts
+import org.kde.kirigami as Kirigami
 import ir.pakrohk.pnp
 
-Page {
+Kirigami.Page {
     id: monitorPage
+    title: "Monitor"
 
-    ColumnLayout {
-        anchors.fill: parent
-        anchors.margins: 20
-        spacing: 20
-
-        Label {
-            text: "PNP Controller Mapper"
-            font.pixelSize: 24
-            font.bold: true
+    actions: [
+        Kirigami.Action {
+            text: "Sync with Steam"
+            icon.name: "view-refresh"
+            onTriggered: backend.syncWithSteam()
         }
+    ]
 
-        ListView {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            model: backend.controllers
-            clip: true
-            spacing: 20
+    Kirigami.CardsListView {
+        id: cardsList
+        anchors.fill: parent
+        model: backend.controllers
 
-            delegate: ColumnLayout {
-                width: parent.width
-                spacing: 10
+        delegate: Kirigami.AbstractCard {
+            contentItem: ColumnLayout {
+                spacing: Kirigami.Units.mediumSpacing
 
-                Frame {
-                    Layout.fillWidth: true
-                    padding: 15
+                RowLayout {
+                    spacing: Kirigami.Units.largeSpacing
 
-                    RowLayout {
-                        width: parent.width
-                        spacing: 15
-
-                        Rectangle {
-                            width: 40
-                            height: 40
-                            radius: 20
-                            color: modelData.isActive ? "#4CAF50" : "#F44336"
-
-                            Label {
-                                anchors.centerIn: parent
-                                text: "🎮"
-                                font.pixelSize: 20
-                            }
-                        }
-
-                        ColumnLayout {
-                            Layout.fillWidth: true
-                            Label {
-                                text: modelData.name
-                                font.bold: true
-                                font.pixelSize: 16
-                            }
-                            Label {
-                                text: "Serial: " + modelData.serial + " | Path: " + modelData.path
-                                font.pixelSize: 12
-                                opacity: 0.7
-                            }
-                        }
-
-                        RowLayout {
-                            spacing: 5
-                            visible: modelData.batteryPercentage >= 0
-                            Label {
-                                text: modelData.batteryPercentage + "%"
-                            }
-                            Label {
-                                text: modelData.batteryStatus === "Charging" ? "⚡" : "🔋"
-                            }
-                        }
-
-                        Switch {
-                            checked: modelData.isActive
-                            onToggled: backend.toggleController(modelData.path, checked)
-                        }
-                    }
-                }
-
-                Frame {
-                    Layout.fillWidth: true
-                    visible: modelData.isActive
-                    background: Rectangle {
-                        color: "#2A2A2A"
-                        radius: 4
+                    Kirigami.Icon {
+                        source: "gamepad"
+                        Layout.preferredWidth: Kirigami.Units.gridUnit * 2
+                        Layout.preferredHeight: Kirigami.Units.gridUnit * 2
+                        color: modelData.isActive ? Kirigami.Theme.positiveTextColor : Kirigami.Theme.negativeTextColor
                     }
 
                     ColumnLayout {
-                        width: parent.width
-                        Label {
-                            text: "Current Key Mappings"
-                            font.bold: true
-                            font.pixelSize: 12
-                            opacity: 0.8
-                        }
-
-                        Flow {
+                        Layout.fillWidth: true
+                        spacing: 0
+                        Kirigami.Heading {
+                            text: modelData.name
+                            level: 2
                             Layout.fillWidth: true
-                            spacing: 10
+                        }
+                        Controls.Label {
+                            text: "Serial: " + modelData.serial
+                            font.family: "monospace"
+                            font.pixelSize: Kirigami.Units.gridUnit * 0.7
+                            opacity: 0.7
+                        }
+                        Controls.Label {
+                            text: "Path: " + modelData.path
+                            font.family: "monospace"
+                            font.pixelSize: Kirigami.Units.gridUnit * 0.7
+                            opacity: 0.7
+                        }
+                    }
 
-                            Repeater {
-                                model: backend.config.mapping.keymap.split(",")
-                                Rectangle {
-                                    width: mapText.width + 20
-                                    height: 24
-                                    radius: 12
-                                    color: "#3A3A3A"
-                                    border.color: "#555"
+                    ColumnLayout {
+                        visible: modelData.batteryPercentage >= 0
+                        spacing: 0
+                        Controls.Label {
+                            text: modelData.batteryPercentage + "%"
+                            font.bold: true
+                            Layout.alignment: Qt.AlignHCenter
+                        }
+                        Kirigami.Icon {
+                            source: modelData.batteryStatus === "Charging" ? "battery-charging" : "battery-100" // Should use dynamic icon based on percentage
+                            Layout.preferredWidth: Kirigami.Units.gridUnit
+                            Layout.preferredHeight: Kirigami.Units.gridUnit
+                        }
+                    }
 
-                                    Label {
-                                        id: mapText
-                                        anchors.centerIn: parent
-                                        text: modelData.replace("BTN_", "")
-                                        font.pixelSize: 10
-                                    }
+                    Controls.Switch {
+                        checked: modelData.isActive
+                        onToggled: backend.toggleController(modelData.path, checked)
+                    }
+                }
+
+                Kirigami.Separator {
+                    Layout.fillWidth: true
+                    visible: modelData.isActive
+                }
+
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    visible: modelData.isActive
+                    spacing: Kirigami.Units.smallSpacing
+
+                    Controls.Label {
+                        text: "Current Key Mappings"
+                        font.bold: true
+                    }
+
+                    Flow {
+                        Layout.fillWidth: true
+                        spacing: Kirigami.Units.smallSpacing
+
+                        Repeater {
+                            model: backend.config.mapping.keymap.split(",")
+                            Rectangle {
+                                width: mapText.width + Kirigami.Units.gridUnit
+                                height: Kirigami.Units.gridUnit * 1.5
+                                radius: height / 2
+                                color: Kirigami.Theme.alternateBackgroundColor
+                                border.color: Kirigami.Theme.focusColor
+                                border.width: 1
+
+                                Controls.Label {
+                                    id: mapText
+                                    anchors.centerIn: parent
+                                    text: modelData.replace("BTN_", "")
+                                    font.pixelSize: Kirigami.Units.gridUnit * 0.7
                                 }
                             }
                         }
@@ -125,44 +120,64 @@ Page {
             }
         }
 
-        RowLayout {
-            Layout.fillWidth: true
-            spacing: 10
-
-            ComboBox {
-                id: profileCombo
-                model: ["Default Profile", "Competitive", "Racing", "Fighting"]
-                Layout.fillWidth: true
-            }
-
-            Button {
-                text: "📥 Download from Steam"
-                onClicked: backend.syncWithSteam()
-            }
-
-            Button {
-                text: "📂 Load Profile"
-                onClicked: backend.loadProfile(profileCombo.currentText)
-            }
+        Kirigami.PlaceholderMessage {
+            anchors.centerIn: parent
+            visible: cardsList.count === 0
+            icon.name: "gamepad"
+            text: "No Controllers Detected"
+            helpfulText: "Connect a PlayStation controller via USB or Bluetooth."
         }
+    }
 
-        RowLayout {
-            Layout.fillWidth: true
-            spacing: 10
+    footer: Kirigami.ActionToolBar {
+        actions: [
+            Kirigami.Action {
+                text: "Load Profile"
+                icon.name: "document-open"
+                onTriggered: profileDialog.open()
+            }
+        ]
+    }
 
-            TextField {
+    Kirigami.OverlaySheet {
+        id: profileDialog
+        header: Kirigami.Heading { text: "Select Profile" }
+
+        ColumnLayout {
+            spacing: Kirigami.Units.largeSpacing
+
+            Controls.ComboBox {
+                id: profileCombo
+                Layout.fillWidth: true
+                model: ["Default Profile", "Competitive", "Racing", "Fighting"]
+            }
+
+            Controls.Button {
+                text: "Load Selected Profile"
+                icon.name: "document-open"
+                Layout.fillWidth: true
+                onClicked: {
+                    backend.loadProfile(profileCombo.currentText)
+                    profileDialog.close()
+                }
+            }
+
+            Kirigami.Separator { Layout.fillWidth: true }
+
+            Controls.TextField {
                 id: profileNameField
-                placeholderText: "Profile Name"
+                placeholderText: "New Profile Name"
                 Layout.fillWidth: true
             }
 
-            Button {
-                text: "💾 Save Profile"
+            Controls.Button {
+                text: "Save Current as New Profile"
+                icon.name: "document-save"
+                Layout.fillWidth: true
                 onClicked: {
                     if (profileNameField.text !== "") {
                         backend.saveProfile(profileNameField.text)
-                    } else {
-                        backend.saveConfig()
+                        profileDialog.close()
                     }
                 }
             }

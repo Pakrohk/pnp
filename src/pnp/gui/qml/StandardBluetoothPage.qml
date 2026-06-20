@@ -4,6 +4,7 @@ import QtQuick.Layouts
 
 Page {
     id: standardPage
+    property list<var> scannedDevices: []
 
     ColumnLayout {
         anchors.fill: parent
@@ -46,7 +47,7 @@ Page {
             ListView {
                 id: deviceList
                 SplitView.preferredWidth: 300
-                model: bluetoothPage.scannedDevices
+                model: standardPage.scannedDevices
                 clip: true
                 spacing: 5
                 delegate: ItemDelegate {
@@ -104,7 +105,7 @@ Page {
             logs.append(prefix + " " + message)
         }
         function onBluetoothScanFinished(devices) {
-            bluetoothPage.scannedDevices = devices
+            standardPage.scannedDevices = devices
         }
     }
 }

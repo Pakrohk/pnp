@@ -16,6 +16,7 @@ dependencies = [
     "requests",
     "vdf",
 ]
+# Note: Kirigami is a recommended system dependency, not available on PyPI.
 readme = "README.md"
 requires-python = ">= 3.10"
 classifiers = [

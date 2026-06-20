@@ -1,39 +1,59 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as Controls
 import QtQuick.Layouts
+import org.kde.kirigami as Kirigami
 
-Page {
+Kirigami.Page {
     id: nonSteamPage
+    title: "Non-Steam Games"
 
     property var selectedGame: null
 
     Component.onCompleted: backend.refreshNonSteamGames()
 
+    actions: [
+        Kirigami.Action {
+            text: "Refresh Games"
+            icon.name: "view-refresh"
+            onTriggered: backend.refreshNonSteamGames()
+        },
+        Kirigami.Action {
+            text: "Select Custom Folder"
+            icon.name: "folder-open"
+            onTriggered: backend.selectGamesDirectory()
+        },
+        Kirigami.Action {
+            text: "Configure Paths"
+            icon.name: "settings-configure"
+            onTriggered: settingsDialog.open()
+        }
+    ]
+
     RowLayout {
         anchors.fill: parent
-        anchors.margins: 20
-        spacing: 20
+        spacing: 0
 
         // Left Panel - Game List
         ColumnLayout {
             Layout.fillHeight: true
-            Layout.preferredWidth: 350
-            spacing: 15
+            Layout.preferredWidth: Kirigami.Units.gridUnit * 15
+            spacing: 0
 
-            RowLayout {
+            Rectangle {
                 Layout.fillWidth: true
-                spacing: 10
-                TextField {
+                Layout.preferredHeight: Kirigami.Units.gridUnit * 3
+                color: Kirigami.Theme.alternateBackgroundColor
+
+                Controls.TextField {
                     id: searchBar
-                    Layout.fillWidth: true
-                    placeholderText: "🔍 Search games..."
-                }
-                Button {
-                    text: "⚙️"
-                    flat: true
-                    onClicked: settingsDialog.open()
+                    anchors.centerIn: parent
+                    width: parent.width - Kirigami.Units.largeSpacing * 2
+                    placeholderText: "Search games..."
+                    leftPadding: Kirigami.Units.gridUnit
                 }
             }
+
+            Kirigami.Separator { Layout.fillWidth: true }
 
             ListView {
                 id: gameList
@@ -41,11 +61,11 @@ Page {
                 Layout.fillHeight: true
                 model: searchBar.text === "" ? backend.nonSteamGames : backend.nonSteamGames.filter(game => game.title.toLowerCase().includes(searchBar.text.toLowerCase()))
                 clip: true
-                spacing: 8
+                highlight: Rectangle { color: Kirigami.Theme.highlightColor; opacity: 0.2 }
+                currentIndex: -1
 
-                delegate: ItemDelegate {
-                    width: gameList.width
-                    height: 60
+                delegate: Kirigami.AbstractListItem {
+                    height: Kirigami.Units.gridUnit * 3
                     highlighted: ListView.isCurrentItem
 
                     onClicked: {
@@ -53,115 +73,102 @@ Page {
                         nonSteamPage.selectedGame = modelData
                     }
 
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.margins: 10
-                        spacing: 15
-
-                        Label {
-                            text: modelData.source === "Heroic" ? "🚀" : "🐉"
-                            font.pixelSize: 24
+                    contentItem: RowLayout {
+                        spacing: Kirigami.Units.mediumSpacing
+                        Kirigami.Icon {
+                            source: modelData.source === "Heroic" ? "applications-games" : "applications-other"
+                            Layout.preferredWidth: Kirigami.Units.gridUnit * 1.5
+                            Layout.preferredHeight: Kirigami.Units.gridUnit * 1.5
                         }
-
                         ColumnLayout {
                             Layout.fillWidth: true
-                            spacing: 2
-                            Label {
+                            spacing: 0
+                            Controls.Label {
                                 text: modelData.title
                                 font.bold: true
                                 elide: Text.ElideRight
+                                Layout.fillWidth: true
                             }
-                            Label {
+                            Controls.Label {
                                 text: modelData.source
-                                font.pixelSize: 10
+                                font.pixelSize: Kirigami.Units.gridUnit * 0.6
                                 opacity: 0.6
                             }
                         }
-
-                        Rectangle {
-                            width: 80
-                            height: 20
-                            radius: 10
-                            color: modelData.isAdded ? "#4CAF50" : "#555"
-                            Label {
-                                anchors.centerIn: parent
-                                text: modelData.isAdded ? "Added" : "Not Added"
-                                font.pixelSize: 9
-                                font.bold: true
-                                color: "white"
-                            }
+                        Kirigami.Icon {
+                            source: "emblem-added"
+                            visible: modelData.isAdded
+                            Layout.preferredWidth: Kirigami.Units.gridUnit
+                            Layout.preferredHeight: Kirigami.Units.gridUnit
+                            color: Kirigami.Theme.positiveTextColor
                         }
                     }
                 }
-            }
 
-            RowLayout {
-                Layout.fillWidth: true
-                spacing: 10
-                Button {
-                    text: "🔄 Refresh"
-                    Layout.fillWidth: true
-                    onClicked: backend.refreshNonSteamGames()
-                }
-                Button {
-                    text: "📂 Select Folder"
-                    Layout.fillWidth: true
-                    onClicked: backend.selectGamesDirectory()
+                Kirigami.PlaceholderMessage {
+                    anchors.centerIn: parent
+                    visible: gameList.count === 0
+                    text: "No games found"
+                    icon.name: "search"
                 }
             }
         }
+
+        Kirigami.Separator { Layout.fillHeight: true }
 
         // Right Panel - Game Details
         ColumnLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            spacing: 20
+            Layout.margins: Kirigami.Units.largeSpacing
+            spacing: Kirigami.Units.largeSpacing
             visible: selectedGame !== null
 
-            Label {
+            Kirigami.Heading {
                 text: selectedGame ? selectedGame.title : ""
-                font.pixelSize: 28
-                font.bold: true
+                level: 1
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
             }
 
-            GridLayout {
-                columns: 2
-                columnSpacing: 20
-                rowSpacing: 10
+            Kirigami.FormLayout {
+                Layout.fillWidth: true
 
-                Label { text: "Source:"; opacity: 0.6 }
-                Label { text: selectedGame ? selectedGame.source : "" }
-
-                Label { text: "Install Dir:"; opacity: 0.6 }
-                Label {
-                    text: selectedGame ? selectedGame.installDir : ""
-                    elide: Text.ElideMiddle
-                    Layout.preferredWidth: 300
+                Controls.Label {
+                    Kirigami.FormData.label: "Source:"
+                    text: selectedGame ? selectedGame.source : ""
                 }
 
-                Label { text: "Executable:"; opacity: 0.6 }
-                Label {
+                Controls.Label {
+                    Kirigami.FormData.label: "Install Directory:"
+                    text: selectedGame ? selectedGame.installDir : ""
+                    elide: Text.ElideMiddle
+                    Layout.fillWidth: true
+                }
+
+                Controls.Label {
+                    Kirigami.FormData.label: "Executable:"
                     text: selectedGame ? selectedGame.executable : ""
                     elide: Text.ElideMiddle
-                    Layout.preferredWidth: 300
+                    Layout.fillWidth: true
                 }
             }
 
             Item { Layout.fillHeight: true }
 
             RowLayout {
-                spacing: 15
-                Button {
-                    text: "🚀 Add to Steam & Configure"
+                spacing: Kirigami.Units.largeSpacing
+                Controls.Button {
+                    text: "Add to Steam & Configure"
+                    icon.name: "list-add"
                     highlighted: true
                     enabled: selectedGame && !selectedGame.isAdded
                     onClicked: backend.addNonSteamGame(selectedGame)
                 }
 
-                Button {
-                    text: "🗑️ Remove from Steam"
+                Controls.Button {
+                    text: "Remove from Steam"
+                    icon.name: "list-remove"
                     enabled: selectedGame && selectedGame.isAdded
                     onClicked: backend.removeNonSteamGame(selectedGame.title)
                 }
@@ -169,42 +176,37 @@ Page {
         }
 
         // Empty State for Right Panel
-        Item {
+        Kirigami.PlaceholderMessage {
             Layout.fillWidth: true
             Layout.fillHeight: true
             visible: selectedGame === null
-
-            Label {
-                anchors.centerIn: parent
-                text: "Select a game to view details"
-                opacity: 0.4
-                font.pixelSize: 18
-            }
+            text: "Select a game to view details"
+            icon.name: "applications-games"
         }
     }
 
-    Dialog {
+    Controls.Dialog {
         id: settingsDialog
         title: "Non-Steam Settings"
-        standardButtons: Dialog.Ok | Dialog.Cancel
+        standardButtons: Controls.Dialog.Ok | Controls.Dialog.Cancel
+        modal: true
         anchors.centerIn: parent
 
-        ColumnLayout {
-            spacing: 15
-            Label { text: "Paths Configuration"; font.bold: true }
-
-            TextField {
+        Kirigami.FormLayout {
+            Controls.TextField {
                 id: heroicPath
+                Kirigami.FormData.label: "Heroic Games Directory"
+                placeholderText: "~/Games/Heroic"
+                text: backend.config.heroic_games_dir || ""
                 Layout.fillWidth: true
-                placeholderText: "Heroic Games Directory"
-                text: backend.config.heroic_games_dir || "~/Games/Heroic"
             }
 
-            TextField {
+            Controls.TextField {
                 id: hydraPath
+                Kirigami.FormData.label: "Hydra Games Directory"
+                placeholderText: "~/Games/Hydra"
+                text: backend.config.hydra_games_dir || ""
                 Layout.fillWidth: true
-                placeholderText: "Hydra Games Directory"
-                text: backend.config.hydra_games_dir || "~/Games/Hydra"
             }
         }
 

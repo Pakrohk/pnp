@@ -1,33 +1,185 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as Controls
 import QtQuick.Layouts
+import org.kde.kirigami as Kirigami
 
-Item {
+Kirigami.Page {
     id: bluetoothPage
+    title: "Bluetooth Management"
 
     property list<var> scannedDevices: []
 
-    // Logic to detect Kirigami availability
-    property bool hasKirigami: false
-
-    Component.onCompleted: {
-        try {
-            var component = Qt.createComponent("KirigamiBluetoothPage.qml")
-            if (component.status === Component.Ready) {
-                hasKirigami = true
-                loader.source = "KirigamiBluetoothPage.qml"
-            } else {
-                console.log("Kirigami not available or error:", component.errorString())
-                loader.source = "StandardBluetoothPage.qml"
+    actions: [
+        Kirigami.Action {
+            text: "Scan for Devices"
+            icon.name: "view-refresh"
+            onTriggered: {
+                scannedDevices = []
+                backend.scanBluetoothDevices()
             }
-        } catch (e) {
-            console.log("Failed to load Kirigami component:", e)
-            loader.source = "StandardBluetoothPage.qml"
+        },
+        Kirigami.Action {
+            text: "Reset Stack"
+            icon.name: "view-restore"
+            onTriggered: resetDialog.open()
+        }
+    ]
+
+    ColumnLayout {
+        anchors.fill: parent
+        spacing: Kirigami.Units.largeSpacing
+
+        Kirigami.InlineMessage {
+            id: statusMessage
+            Layout.fillWidth: true
+            Layout.margins: Kirigami.Units.smallSpacing
+            visible: text !== ""
+            text: ""
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            spacing: 0
+
+            // Device List
+            ColumnLayout {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                Kirigami.Heading {
+                    text: "Available Devices"
+                    level: 3
+                    Layout.margins: Kirigami.Units.smallSpacing
+                }
+
+                Kirigami.CardsListView {
+                    id: deviceList
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    model: bluetoothPage.scannedDevices
+                    clip: true
+
+                    delegate: Kirigami.AbstractCard {
+                        contentItem: RowLayout {
+                            spacing: Kirigami.Units.mediumSpacing
+
+                            Kirigami.Icon {
+                                source: "bluetooth"
+                                Layout.preferredWidth: Kirigami.Units.gridUnit
+                                Layout.preferredHeight: Kirigami.Units.gridUnit
+                            }
+
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 0
+                                Controls.Label {
+                                    text: modelData.name
+                                    font.bold: true
+                                }
+                                Controls.Label {
+                                    text: modelData.mac
+                                    font.family: "monospace"
+                                    font.pixelSize: Kirigami.Units.gridUnit * 0.6
+                                    opacity: 0.6
+                                }
+                            }
+
+                            Controls.Button {
+                                text: "Pair"
+                                icon.name: "network-connect"
+                                onClicked: backend.pairBluetoothDevice(modelData.mac)
+                            }
+
+                            Controls.Button {
+                                icon.name: "edit-clear"
+                                flat: true
+                                onClicked: backend.clearBluetoothCache(modelData.mac)
+                                Controls.ToolTip.visible: hovered
+                                Controls.ToolTip.text: "Clear Device Cache"
+                            }
+                        }
+                    }
+
+                    Kirigami.PlaceholderMessage {
+                        anchors.centerIn: parent
+                        text: "No devices found"
+                        visible: deviceList.count === 0
+                        icon.name: "bluetooth"
+                        helpfulText: "Click 'Scan for Devices' to begin discovery."
+                    }
+                }
+            }
+
+            Kirigami.Separator { Layout.fillHeight: true }
+
+            // Live Monitor
+            ColumnLayout {
+                Layout.preferredWidth: parent.width * 0.4
+                Layout.fillHeight: true
+
+                Kirigami.Heading {
+                    text: "Live Monitor"
+                    level: 3
+                    Layout.margins: Kirigami.Units.smallSpacing
+                }
+
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    color: Kirigami.Theme.alternateBackgroundColor
+                    border.color: Kirigami.Theme.focusColor
+
+                    Controls.ScrollView {
+                        anchors.fill: parent
+                        anchors.margins: 1
+
+                        Controls.TextArea {
+                            id: bluetoothLogs
+                            readOnly: true
+                            font.family: "Monospace"
+                            font.pixelSize: Kirigami.Units.gridUnit * 0.6
+                            color: Kirigami.Theme.textColor
+                            wrapMode: Text.Wrap
+                            background: null
+
+                            onTextChanged: {
+                                if (length > 0) cursorPosition = length - 1
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
-    Loader {
-        id: loader
-        anchors.fill: parent
+    Controls.Dialog {
+        id: resetDialog
+        title: "Reset Bluetooth Stack"
+        standardButtons: Controls.Dialog.Ok | Controls.Dialog.Cancel
+        modal: true
+        anchors.centerIn: parent
+
+        Controls.Label {
+            text: "This will attempt to restart the Bluetooth service and reload kernel modules. Continue?"
+            wrapMode: Text.WordWrap
+            width: Kirigami.Units.gridUnit * 15
+        }
+
+        onAccepted: backend.applyDiagnosticFix("bluetooth_inactive")
+    }
+
+    Connections {
+        target: backend
+        function onBluetoothLogReceived(message, prefix) {
+            bluetoothLogs.append("<font color=\"" + Kirigami.Theme.highlightColor + "\">" + prefix + "</font> " + message)
+            if (message.includes("Pairing SM [")) {
+                statusMessage.text = message
+                statusMessage.type = message.includes("FAIL") ? Kirigami.MessageType.Error : Kirigami.MessageType.Information
+            }
+        }
+        function onBluetoothScanFinished(devices) {
+            bluetoothPage.scannedDevices = devices
+        }
     }
 }

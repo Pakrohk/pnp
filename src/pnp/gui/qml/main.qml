@@ -1,106 +1,94 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as Controls
 import QtQuick.Layouts
-import QtQuick.Controls.Material
+import org.kde.kirigami as Kirigami
 
-ApplicationWindow {
-    id: window
-    visible: true
-    width: 900
-    height: 700
+Kirigami.ApplicationWindow {
+    id: root
+    width: 1024
+    height: 768
     title: "PNP – PS NOT PS"
 
-    Material.theme: Material.Dark
-    Material.accent: Material.LightBlue
+    globalDrawer: Kirigami.GlobalDrawer {
+        title: "PNP"
+        iconSource: "applications-games"
 
-    ColumnLayout {
-        anchors.fill: parent
-        spacing: 0
+        actions: [
+            Kirigami.Action {
+                text: "Monitor"
+                iconName: "gamepad"
+                onTriggered: pageStack.replace(monitorPage)
+            },
+            Kirigami.Action {
+                text: "Game Library"
+                iconName: "games-config"
+                onTriggered: pageStack.replace(libraryPage)
+            },
+            Kirigami.Action {
+                text: "Non-Steam Games"
+                iconName: "applications-other"
+                onTriggered: pageStack.replace(nonSteamPage)
+            },
+            Kirigami.Action {
+                text: "Bluetooth"
+                iconName: "preferences-system-bluetooth"
+                onTriggered: pageStack.replace(bluetoothPage)
+            },
+            Kirigami.Action {
+                text: "Input Tester"
+                iconName: "input-gaming"
+                onTriggered: pageStack.replace(testerPage)
+            },
+            Kirigami.Action {
+                text: "Diagnostics"
+                iconName: "tools-report-bug"
+                onTriggered: pageStack.replace(diagnosticPage)
+            },
+            Kirigami.Action {
+                text: "Settings"
+                iconName: "settings-configure"
+                onTriggered: pageStack.replace(settingsPage)
+            },
+            Kirigami.Action {
+                text: "Logs"
+                iconName: "document-view"
+                onTriggered: pageStack.replace(logPage)
+            }
+        ]
+    }
 
-        StackLayout {
-            id: stackLayout
-            currentIndex: tabBar.currentIndex
-            Layout.fillWidth: true
-            Layout.fillHeight: true
+    Component { id: monitorPage; MonitorPage {} }
+    Component { id: libraryPage; GameLibraryPage {} }
+    Component { id: nonSteamPage; NonSteamPage {} }
+    Component { id: bluetoothPage; BluetoothPage {} }
+    Component { id: testerPage; TesterPage {} }
+    Component { id: diagnosticPage; DiagnosticPage {} }
+    Component { id: settingsPage; SettingsPage {} }
+    Component { id: logPage; LogPage {} }
 
-            MonitorPage {}
-            GameLibraryPage {}
-            NonSteamPage {}
-            BluetoothPage {}
-            TesterPage {}
-            DiagnosticPage {}
-            SettingsPage {}
-            LogPage {}
+    pageStack.initialPage: monitorPage
+
+    // Simple Toast Component using Kirigami.Action if needed or a custom Item
+    // Kirigami has its own message mechanisms, but for compatibility:
+    Kirigami.OverlaySheet {
+        id: toastSheet
+        property string message: ""
+        Label {
+            text: toastSheet.message
+            wrapMode: Text.WordWrap
         }
-
-        TabBar {
-            id: tabBar
-            Layout.fillWidth: true
-            currentIndex: 0
-
-            TabButton {
-                text: "📺 Monitor"
-            }
-            TabButton {
-                text: "🎮 Library"
-            }
-            TabButton {
-                text: "🚀 Non-Steam"
-            }
-            TabButton {
-                text: "📡 Bluetooth"
-            }
-            TabButton {
-                text: "🎮 Tester"
-            }
-            TabButton {
-                text: "🔍 Diags"
-            }
-            TabButton {
-                text: "⚙️ Settings"
-            }
-            TabButton {
-                text: "📜 Logs"
-            }
+        function show(msg) {
+            message = msg
+            open()
         }
     }
 
-    // Simple Toast Component
-    Item {
-        id: toast
-        property string message: ""
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 80
-        width: toastLabel.width + 40
-        height: 40
-        opacity: 0
-        visible: opacity > 0
-
-        Rectangle {
-            anchors.fill: parent
-            color: "#333"
-            radius: 20
-            border.color: "#555"
-        }
-
-        Label {
-            id: toastLabel
-            anchors.centerIn: parent
-            text: toast.message
-            color: "white"
-        }
-
+    // Compatibility function for pages that call window.toast.show()
+    property alias toast: toastCompat
+    QtObject {
+        id: toastCompat
         function show(msg) {
-            message = msg
-            toastAnim.restart()
-        }
-
-        SequentialAnimation on opacity {
-            id: toastAnim
-            NumberAnimation { to: 1; duration: 200 }
-            PauseAnimation { duration: 3000 }
-            NumberAnimation { to: 0; duration: 500 }
+            root.showPassiveNotification(msg)
         }
     }
 }

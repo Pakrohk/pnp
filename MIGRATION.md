@@ -47,6 +47,7 @@ The project has moved from a GObject-based architecture to a Qt-based one. This 
 
 - **Removed**: `PyGObject`, `gtk4`, `libadwaita`.
 - **Added**: `PySide6`, `loguru`.
+- **System Dependencies**: `Kirigami` (KDE Frameworks) is now a recommended system dependency for the modern UI.
 
 ## 5. Entry Points
 
