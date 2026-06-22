@@ -65,10 +65,30 @@ If Kirigami is not installed, the app will automatically fallback to standard Qt
 ### 3. Distro-Specific Commands
 
 #### Arch Linux (AUR)
+*Note: The package may still be in the process of being published to the AUR.*
 ```bash
 # Using your favourite AUR helper
 yay -S pnp
 ```
+
+#### Manual Installation (Alternative)
+If the system packages are not yet available for your distribution, you can run PNP directly from source:
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/pakrohk/pnp.git
+   cd pnp
+   ```
+
+2. **Install `uv`** (modern Python package manager):
+   ```bash
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+   ```
+
+3. **Run the GUI**:
+   ```bash
+   uv run pnp-gui
+   ```
 
 #### Debian / Ubuntu / Mint
 ```bash
