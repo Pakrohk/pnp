@@ -1,9 +1,10 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as Controls
 import QtQuick.Layouts
 
-Page {
+Controls.Page {
     id: standardPage
+    property list<var> scannedDevices: []
 
     ColumnLayout {
         anchors.fill: parent
@@ -13,12 +14,12 @@ Page {
         RowLayout {
             width: parent.width
             ColumnLayout {
-                Label {
+                Controls.Label {
                     text: "Bluetooth Management (Standard Mode)"
                     font.pixelSize: 24
                     font.bold: true
                 }
-                Label {
+                Controls.Label {
                     text: "Kirigami not found. Using basic interface."
                     font.pixelSize: 12
                     opacity: 0.7
@@ -27,43 +28,43 @@ Page {
             Item { Layout.fillWidth: true }
             RowLayout {
                 spacing: 10
-                Button {
+                Controls.Button {
                     text: "🔍 Scan"
                     onClicked: backend.scanBluetoothDevices()
                 }
-                Button {
+                Controls.Button {
                     text: "🔄 Reset Stack"
                     onClicked: resetDialog.open()
                 }
             }
         }
 
-        SplitView {
+        Controls.SplitView {
             Layout.fillWidth: true
             Layout.fillHeight: true
             orientation: Qt.Horizontal
 
             ListView {
                 id: deviceList
-                SplitView.preferredWidth: 300
-                model: bluetoothPage.scannedDevices
+                Controls.SplitView.preferredWidth: 300
+                model: standardPage.scannedDevices
                 clip: true
                 spacing: 5
-                delegate: ItemDelegate {
+                delegate: Controls.ItemDelegate {
                     width: parent.width
                     RowLayout {
                         anchors.fill: parent
                         anchors.margins: 10
                         ColumnLayout {
                             Layout.fillWidth: true
-                            Label { text: modelData.name; font.bold: true }
-                            Label { text: modelData.mac; font.pixelSize: 10; opacity: 0.6 }
+                            Controls.Label { text: modelData.name; font.bold: true }
+                            Controls.Label { text: modelData.mac; font.pixelSize: 10; opacity: 0.6 }
                         }
-                        Button {
+                        Controls.Button {
                             text: "Pair"
                             onClicked: backend.pairBluetoothDevice(modelData.mac)
                         }
-                        Button {
+                        Controls.Button {
                             text: "🧹"
                             flat: true
                             onClicked: backend.clearBluetoothCache(modelData.mac)
@@ -73,11 +74,11 @@ Page {
             }
 
             ColumnLayout {
-                Label { text: "Logs:"; font.bold: true }
-                ScrollView {
+                Controls.Label { text: "Logs:"; font.bold: true }
+                Controls.ScrollView {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    TextArea {
+                    Controls.TextArea {
                         id: logs
                         readOnly: true
                         font.family: "Monospace"
@@ -91,10 +92,10 @@ Page {
         }
     }
 
-    Dialog {
+    Controls.Dialog {
         id: resetDialog
         title: "Reset Stack"
-        standardButtons: Dialog.Ok | Dialog.Cancel
+        standardButtons: Controls.Dialog.Ok | Controls.Dialog.Cancel
         onAccepted: backend.applyDiagnosticFix("bluetooth_inactive")
     }
 
@@ -104,7 +105,7 @@ Page {
             logs.append(prefix + " " + message)
         }
         function onBluetoothScanFinished(devices) {
-            bluetoothPage.scannedDevices = devices
+            standardPage.scannedDevices = devices
         }
     }
 }

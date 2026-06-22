@@ -35,13 +35,60 @@ PNP requires the following system components:
 - **Core**: `python3 (>= 3.10)`, `evsieve`
 - **Python Libs**: `PySide6`, `loguru`, `evdev`, `pyudev`, `requests`, `pyxdg`, `commentjson`
 
-### 2. Distro-Specific Commands
+### 2. KDE Plasma Dependencies (Required for Kirigami UI)
+
+Install the following packages from your system repositories (NOT pip):
+
+**Arch / Manjaro:**
+```bash
+sudo pacman -S pyside6 kirigami qqc2-desktop-style
+```
+
+**Fedora:**
+```bash
+sudo dnf install python3-pyside6 kf6-kirigami-devel kf6-qqc2-desktop-style
+```
+
+**openSUSE:**
+```bash
+sudo zypper install python3-pyside6 kf6-kirigami-devel kf6-qqc2-desktop-style
+```
+
+**Ubuntu / Debian:**
+```bash
+sudo apt install pyside6 qml-module-org-kde-kirigami qml-module-org-kde-desktop
+```
+
+#### Fallback Behavior
+If Kirigami is not installed, the app will automatically fallback to standard Qt Quick Controls 2 with Fusion style, but will display a warning recommending Kirigami installation.
+
+### 3. Distro-Specific Commands
 
 #### Arch Linux (AUR)
+*Note: The package may still be in the process of being published to the AUR.*
 ```bash
 # Using your favourite AUR helper
 yay -S pnp
 ```
+
+#### Manual Installation (Alternative)
+If the system packages are not yet available for your distribution, you can run PNP directly from source:
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/pakrohk/pnp.git
+   cd pnp
+   ```
+
+2. **Install `uv`** (modern Python package manager):
+   ```bash
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+   ```
+
+3. **Run the GUI**:
+   ```bash
+   uv run pnp-gui
+   ```
 
 #### Debian / Ubuntu / Mint
 ```bash

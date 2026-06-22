@@ -1,106 +1,82 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as Controls
 import QtQuick.Layouts
-import QtQuick.Controls.Material
+import org.kde.plasma.components 3.0 as PlasmaComponents
+import org.kde.kirigami as Kirigami
 
-ApplicationWindow {
-    id: window
-    visible: true
-    width: 900
-    height: 700
+Kirigami.ApplicationWindow {
+    id: root
+    width: 1024
+    height: 768
     title: "PNP – PS NOT PS"
 
-    Material.theme: Material.Dark
-    Material.accent: Material.LightBlue
+    pageStack.initialPage: Kirigami.PagePool.loadPage("MonitorPage.qml")
 
-    ColumnLayout {
-        anchors.fill: parent
-        spacing: 0
-
-        StackLayout {
-            id: stackLayout
-            currentIndex: tabBar.currentIndex
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-
-            MonitorPage {}
-            GameLibraryPage {}
-            NonSteamPage {}
-            BluetoothPage {}
-            TesterPage {}
-            DiagnosticPage {}
-            SettingsPage {}
-            LogPage {}
+    globalDrawer: Kirigami.GlobalDrawer {
+        header: Kirigami.Heading {
+            text: "PNP"
+            level: 1
+            Layout.margins: Kirigami.Units.largeSpacing
         }
 
-        TabBar {
-            id: tabBar
-            Layout.fillWidth: true
-            currentIndex: 0
+        actions: [
+            Kirigami.PagePoolAction {
+                text: "Monitor"
+                icon.name: "gamepad"
+                page: "MonitorPage.qml"
+            },
+            Kirigami.PagePoolAction {
+                text: "Game Library"
+                icon.name: "games-config"
+                page: "GameLibraryPage.qml"
+            },
+            Kirigami.PagePoolAction {
+                text: "Non-Steam Games"
+                icon.name: "applications-other"
+                page: "NonSteamPage.qml"
+            },
+            Kirigami.PagePoolAction {
+                text: "Bluetooth"
+                icon.name: "preferences-system-bluetooth"
+                page: "BluetoothPage.qml"
+            },
+            Kirigami.PagePoolAction {
+                text: "Input Tester"
+                icon.name: "input-gaming"
+                page: "TesterPage.qml"
+            },
+            Kirigami.PagePoolAction {
+                text: "Diagnostics"
+                icon.name: "tools-report-bug"
+                page: "DiagnosticPage.qml"
+            },
+            Kirigami.PagePoolAction {
+                text: "Settings"
+                icon.name: "settings-configure"
+                page: "SettingsPage.qml"
+            },
+            Kirigami.PagePoolAction {
+                text: "Logs"
+                icon.name: "document-view"
+                page: "LogPage.qml"
+            }
+        ]
+    }
 
-            TabButton {
-                text: "📺 Monitor"
-            }
-            TabButton {
-                text: "🎮 Library"
-            }
-            TabButton {
-                text: "🚀 Non-Steam"
-            }
-            TabButton {
-                text: "📡 Bluetooth"
-            }
-            TabButton {
-                text: "🎮 Tester"
-            }
-            TabButton {
-                text: "🔍 Diags"
-            }
-            TabButton {
-                text: "⚙️ Settings"
-            }
-            TabButton {
-                text: "📜 Logs"
-            }
+
+    // Compatibility function for pages that call window.toast.show()
+    property alias toast: toastCompat
+    QtObject {
+        id: toastCompat
+        function show(msg) {
+            root.showPassiveNotification(msg)
         }
     }
 
-    // Simple Toast Component
-    Item {
-        id: toast
-        property string message: ""
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 80
-        width: toastLabel.width + 40
-        height: 40
-        opacity: 0
-        visible: opacity > 0
-
-        Rectangle {
-            anchors.fill: parent
-            color: "#333"
-            radius: 20
-            border.color: "#555"
-        }
-
-        Label {
-            id: toastLabel
-            anchors.centerIn: parent
-            text: toast.message
-            color: "white"
-        }
-
-        function show(msg) {
-            message = msg
-            toastAnim.restart()
-        }
-
-        SequentialAnimation on opacity {
-            id: toastAnim
-            NumberAnimation { to: 1; duration: 200 }
-            PauseAnimation { duration: 3000 }
-            NumberAnimation { to: 0; duration: 500 }
+    Connections {
+        target: backend
+        function onShowToast(message) {
+            root.showPassiveNotification(message)
         }
     }
 }

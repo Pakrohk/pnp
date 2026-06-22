@@ -1,147 +1,148 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as Controls
 import QtQuick.Layouts
+import org.kde.plasma.components 3.0 as PlasmaComponents
+import org.kde.kirigami as Kirigami
 
-Page {
+Kirigami.Page {
     id: testerPage
+    title: "Input Tester"
 
-    ColumnLayout {
+    Kirigami.CardsListView {
+        id: deviceList
         anchors.fill: parent
-        anchors.margins: 20
-        spacing: 20
+        model: backend.testerDevices
 
-        Label {
-            text: "Input Tester"
-            font.pixelSize: 24
-            font.bold: true
-        }
+        delegate: Kirigami.AbstractCard {
+            contentItem: ColumnLayout {
+                spacing: Kirigami.Units.largeSpacing
 
-        Label {
-            text: "Monitoring active virtual controllers..."
-            font.pixelSize: 14
-            opacity: 0.7
-        }
-
-        ListView {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            model: backend.testerDevices
-            spacing: 20
-            clip: true
-
-            delegate: Frame {
-                width: parent.width
-                padding: 20
-
-                ColumnLayout {
-                    width: parent.width
-                    spacing: 20
-
-                    RowLayout {
-                        width: parent.width
-                        Label {
+                RowLayout {
+                    Layout.fillWidth: true
+                    ColumnLayout {
+                        spacing: 0
+                        Kirigami.Heading {
                             text: modelData.name
+                            level: 3
+                        }
+                        PlasmaComponents.Label {
+                            text: modelData.path
+                            font.family: "monospace"
+                            font.pixelSize: Kirigami.Units.gridUnit * 0.6
+                            opacity: 0.6
+                        }
+                    }
+                    Item { Layout.fillWidth: true }
+                    Rectangle {
+                        width: Kirigami.Units.gridUnit * 4
+                        height: Kirigami.Units.gridUnit * 1.5
+                        radius: height / 2
+                        color: modelData.isVirtual ? Kirigami.Theme.highlightColor : Kirigami.Theme.positiveTextColor
+                        PlasmaComponents.Label {
+                            anchors.centerIn: parent
+                            text: modelData.isVirtual ? "Virtual" : "Physical"
+                            color: "white"
+                            font.pixelSize: Kirigami.Units.gridUnit * 0.6
                             font.bold: true
                         }
-                        Label {
-                            text: modelData.path
-                            font.pixelSize: 12
-                            opacity: 0.6
-                            Layout.fillWidth: true
-                        }
-                        Rectangle {
-                            width: 60
-                            height: 24
-                            radius: 12
-                            color: modelData.isVirtual ? "#2196F3" : "#4CAF50"
-                            Label {
-                                anchors.centerIn: parent
-                                text: modelData.isVirtual ? "Virtual" : "Physical"
-                                color: "white"
-                                font.pixelSize: 10
-                                font.bold: true
-                            }
-                        }
                     }
+                }
 
+                RowLayout {
+                    Layout.alignment: Qt.AlignHCenter
+                    spacing: Kirigami.Units.gridUnit * 2
+
+                    // D-Pad
                     GridLayout {
-                        columns: 2
-                        columnSpacing: 30
-                        rowSpacing: 20
-                        Layout.alignment: Qt.AlignHCenter
+                        columns: 3
+                        rows: 3
+                        columnSpacing: 4
+                        rowSpacing: 4
 
-                        // Simple Visualizer Grid
-                        Grid {
-                            columns: 3
-                            spacing: 10
-
-                            // D-Pad
-                            Item { width: 32; height: 32 }
-                            TesterButton { text: "U"; active: modelData.buttons[706] || false }
-                            Item { width: 32; height: 32 }
-                            TesterButton { text: "L"; active: modelData.buttons[704] || false }
-                            TesterButton { text: "D"; active: modelData.buttons[707] || false }
-                            TesterButton { text: "R"; active: modelData.buttons[705] || false }
-                        }
-
-                        Grid {
-                            columns: 3
-                            spacing: 10
-                            // Action Buttons
-                            Item { width: 32; height: 32 }
-                            TesterButton { text: "Y"; active: (modelData.buttons[308] || false); accentColor: "#F4D03F" }
-                            Item { width: 32; height: 32 }
-                            TesterButton { text: "X"; active: (modelData.buttons[307] || false); accentColor: "#3498DB" }
-                            TesterButton { text: "A"; active: (modelData.buttons[304] || false); accentColor: "#2ECC71" }
-                            TesterButton { text: "B"; active: (modelData.buttons[305] || false); accentColor: "#E74C3C" }
-                        }
+                        Item { Layout.preferredWidth: 32; Layout.preferredHeight: 32 }
+                        TesterButton { text: "U"; active: modelData.buttons[706] || false }
+                        Item { Layout.preferredWidth: 32; Layout.preferredHeight: 32 }
+                        TesterButton { text: "L"; active: modelData.buttons[704] || false }
+                        TesterButton { text: "D"; active: modelData.buttons[707] || false }
+                        TesterButton { text: "R"; active: modelData.buttons[705] || false }
+                        Item { Layout.preferredWidth: 32; Layout.preferredHeight: 32 }
+                        Item { Layout.preferredWidth: 32; Layout.preferredHeight: 32 }
+                        Item { Layout.preferredWidth: 32; Layout.preferredHeight: 32 }
                     }
 
-                    ColumnLayout {
-                        Layout.fillWidth: true
-                        spacing: 10
+                    // Action Buttons
+                    GridLayout {
+                        columns: 3
+                        rows: 3
+                        columnSpacing: 4
+                        rowSpacing: 4
 
-                        Repeater {
-                            model: [
-                                { label: "LX", value: modelData.axes[0] },
-                                { label: "LY", value: modelData.axes[1] },
-                                { label: "RX", value: modelData.axes[2] },
-                                { label: "RY", value: modelData.axes[3] },
-                                { label: "LT", value: modelData.axes[4] },
-                                { label: "RT", value: modelData.axes[5] }
-                            ]
-                            RowLayout {
-                                Label { text: modelData.label; width: 30 }
-                                ProgressBar {
-                                    Layout.fillWidth: true
-                                    value: modelData.value
-                                }
+                        Item { Layout.preferredWidth: 32; Layout.preferredHeight: 32 }
+                        TesterButton { text: "Y"; active: (modelData.buttons[308] || false); accentColor: "#F4D03F" }
+                        Item { Layout.preferredWidth: 32; Layout.preferredHeight: 32 }
+                        TesterButton { text: "X"; active: (modelData.buttons[307] || false); accentColor: "#3498DB" }
+                        Item { Layout.preferredWidth: 32; Layout.preferredHeight: 32 }
+                        TesterButton { text: "B"; active: (modelData.buttons[305] || false); accentColor: "#E74C3C" }
+                        Item { Layout.preferredWidth: 32; Layout.preferredHeight: 32 }
+                        TesterButton { text: "A"; active: (modelData.buttons[304] || false); accentColor: "#2ECC71" }
+                        Item { Layout.preferredWidth: 32; Layout.preferredHeight: 32 }
+                    }
+                }
+
+                GridLayout {
+                    columns: 2
+                    Layout.fillWidth: true
+                    columnSpacing: Kirigami.Units.largeSpacing
+
+                    Repeater {
+                        model: [
+                            { label: "LX", value: modelData.axes[0] },
+                            { label: "LY", value: modelData.axes[1] },
+                            { label: "RX", value: modelData.axes[2] },
+                            { label: "RY", value: modelData.axes[3] },
+                            { label: "LT", value: modelData.axes[4] },
+                            { label: "RT", value: modelData.axes[5] }
+                        ]
+                        RowLayout {
+                            Layout.fillWidth: true
+                            PlasmaComponents.Label { text: modelData.label; Layout.preferredWidth: Kirigami.Units.gridUnit * 1.5 }
+                            PlasmaComponents.ProgressBar {
+                                Layout.fillWidth: true
+                                value: (modelData.value + 1) / 2 // Mapping -1..1 to 0..1 for sticks, assuming triggers are handled correctly by backend
                             }
                         }
                     }
                 }
             }
         }
+
+        Kirigami.PlaceholderMessage {
+            anchors.centerIn: parent
+            visible: deviceList.count === 0
+            icon.name: "input-gaming"
+            text: "No Active Controllers"
+            explanation: "Enable a controller in the Monitor tab to test input."
+        }
     }
 
     component TesterButton: Rectangle {
         property string text: ""
         property bool active: false
-        property color accentColor: "#4CAF50"
+        property color accentColor: Kirigami.Theme.positiveTextColor
 
-        width: 32
-        height: 32
+        Layout.preferredWidth: 32
+        Layout.preferredHeight: 32
         radius: 16
-        color: active ? accentColor : "#333"
-        border.color: "white"
+        color: active ? accentColor : Kirigami.Theme.alternateBackgroundColor
+        border.color: Kirigami.Theme.textColor
         border.width: 1
         opacity: active ? 1.0 : 0.3
 
-        Label {
+        PlasmaComponents.Label {
             anchors.centerIn: parent
             text: parent.text
             font.bold: true
-            color: "white"
+            color: active ? "white" : Kirigami.Theme.textColor
         }
 
         Behavior on opacity { NumberAnimation { duration: 50 } }

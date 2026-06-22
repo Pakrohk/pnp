@@ -1,77 +1,78 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as Controls
 import QtQuick.Layouts
+import org.kde.plasma.components 3.0 as PlasmaComponents
+import org.kde.kirigami as Kirigami
 
-Page {
+Kirigami.Page {
     id: logPage
+    title: "System Logs"
+
+    actions: [
+        Kirigami.Action {
+            text: "Copy All"
+            icon.name: "edit-copy"
+            onTriggered: {
+                logArea.selectAll()
+                logArea.copy()
+                logArea.deselect()
+                root.showPassiveNotification("Logs copied to clipboard")
+            }
+        },
+        Kirigami.Action {
+            text: "Clear Logs"
+            icon.name: "edit-clear-all"
+            onTriggered: backend.clearLogs()
+        }
+    ]
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 20
-        spacing: 15
+        spacing: Kirigami.Units.smallSpacing
 
         RowLayout {
-            width: parent.width
-            Label {
-                text: "System Logs"
-                font.pixelSize: 24
-                font.bold: true
-                Layout.fillWidth: true
-            }
+            Layout.fillWidth: true
+            Layout.margins: Kirigami.Units.smallSpacing
 
-            ComboBox {
+            PlasmaComponents.ComboBox {
                 id: levelFilter
                 model: ["All", "INFO", "WARNING", "ERROR", "DEBUG"]
                 onCurrentTextChanged: backend.setLogLevelFilter(currentText)
+                Layout.preferredWidth: Kirigami.Units.gridUnit * 6
             }
 
-            ComboBox {
+            PlasmaComponents.ComboBox {
                 id: moduleFilter
                 model: ["All", "USB", "Steam", "Mapping", "System", "GUI"]
                 onCurrentTextChanged: backend.setLogModuleFilter(currentText)
+                Layout.preferredWidth: Kirigami.Units.gridUnit * 6
             }
 
-            Button {
-                text: "📋 Copy All"
-                onClicked: {
-                    logArea.selectAll()
-                    logArea.copy()
-                    logArea.deselect()
-                }
-            }
-            Button {
-                text: "🗑️ Clear"
-                onClicked: backend.clearLogs()
-            }
+            Item { Layout.fillWidth: true }
         }
 
-        Frame {
+        Kirigami.Separator { Layout.fillWidth: true }
+
+        PlasmaComponents.ScrollView {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            padding: 0
+            ScrollBar.vertical.policy: Controls.ScrollBar.AlwaysOn
 
-            background: Rectangle {
-                color: "#1E1E1E"
-                radius: 4
-            }
+            PlasmaComponents.TextArea {
+                id: logArea
+                readOnly: true
+                text: backend.logs
+                font.family: "Monospace"
+                font.pixelSize: Kirigami.Units.gridUnit * 0.7
+                color: Kirigami.Theme.textColor
+                wrapMode: Text.Wrap
+                background: Rectangle {
+                    color: Kirigami.Theme.backgroundColor
+                }
 
-            ScrollView {
-                anchors.fill: parent
-                ScrollBar.vertical.policy: ScrollBar.AlwaysOn
-
-                TextArea {
-                    id: logArea
-                    readOnly: true
-                    text: backend.logs
-                    font.family: "Monospace"
-                    font.pixelSize: 12
-                    color: "#D4D4D4"
-                    wrapMode: TextEdit.Wrap
-
-                    onTextChanged: {
-                        if (logArea.length > 0) {
-                            cursorPosition = logArea.length - 1
-                        }
+                onTextChanged: {
+                    if (logArea.length > 0) {
+                        cursorPosition = logArea.length - 1
                     }
                 }
             }
